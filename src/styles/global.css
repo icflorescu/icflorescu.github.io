@@ -81,6 +81,8 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
   -webkit-text-size-adjust: 100%;
+  /* The flash on tapped links and buttons (mobile WebKit and Blink): the accent yellow, faint, instead of grey */
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--yellow) 20%, transparent);
 }
 /* The header is 5rem tall from here (Header.astro): in-page links stop 1rem below it */
 @media (min-width: 62.0625rem) {
