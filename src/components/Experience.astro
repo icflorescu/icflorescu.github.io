@@ -1,0 +1,136 @@
+---
+import { RESUME_URL } from '../data/site';
+import Icon from './Icon.astro';
+
+const link = (label: string, href: string) => `<a href="${href}">${label}</a>`;
+
+const TIMELINE: { when: string; title: string; text?: string; html?: string }[] = [
+  {
+    when: 'Since 2021',
+    title: 'Founder, swapp.ro',
+    text: 'Built for my own books in 2021, rebuilt from scratch in 2026, solo, in five months. Invoicing and accounting for Romanian freelancers, wired into the national e-invoicing system.',
+  },
+  {
+    when: 'Since 2013',
+    title: 'Technical partner & fractional CTO, LeasingSH.ro',
+    text: 'A sweat-equity partnership: I own architecture, code, infrastructure, data and operations. Three rebuilds so far (2013, 2015, 2025), with the business running through each migration.',
+  },
+  {
+    when: 'Since 2008',
+    title: 'Independent: fractional CTO, technical partner, open-source author',
+    html: `Working directly with founders and small-business owners. Contract work includes the fleet-trading back office for ${link('AJM Fleet Purchase', 'https://ajm-fleetpurchase.com/')} (Belgium/Romania, 2020–2023) and work for SegmentX.ai, now ${link('SalesPlay', 'https://www.salesplayx.com/')}. Along the way: UX development for Drift Data Systems, and sites such as ${link('yadda.ro', 'https://yadda.ro/')}, ${link('boutiquetravel.ro', 'https://boutiquetravel.ro/')} and ${link('sellcarbuycar.com', 'https://sellcarbuycar.com/')}.`,
+  },
+  {
+    when: '2008 – 2013',
+    title: 'Tech partner & real-estate investment advisor, Investment Romania',
+    text: 'Part of a private-equity group investing in the Bucharest residential market. The timing was good, and it bought me the freedom to pick my projects ever since.',
+  },
+  {
+    when: '2003 – 2007',
+    title: 'Software developer, Allianz-Țiriac and Garanta (National Bank of Greece group)',
+    html: `On the core team that laid the foundation of ${link('Allianz-Țiriac', 'https://www.allianztiriac.ro')}’s insurance platform on .NET and Oracle, then one of five engineers building ${link('Garanta', 'https://garanta.ro')}’s core insurance system.`,
+  },
+  {
+    when: '1998 – 2003',
+    title: 'From network administrator to lead developer & CTO',
+    html: `Started at the first publicly open Internet café in Bucharest, then built sites and systems for ${link('ANEVAR', 'https://www.anevar.ro')}, AIG Life Romania and OMNIASIG, and grew to lead the IT department at Logic D&amp;D Advertising, a subsidiary of Romanian ISP Logic Telecom.`,
+  },
+];
+---
+
+<section class="section" id="experience" aria-labelledby="experience-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Track record</p>
+      <h2 id="experience-title">Employee, founder, co&#8209;owner, sweat&#8209;equity investor</h2>
+      <p>
+        Nearly three decades of building for the web, which is why I treat software as a business asset. The short
+        version:
+      </p>
+    </div>
+    <ol class="timeline">
+      {
+        TIMELINE.map((item) => (
+          <li>
+            <p class="when">{item.when}</p>
+            <div>
+              <h3>{item.title}</h3>
+              {item.html ? <p set:html={item.html} /> : <p>{item.text}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="resume">
+      <a class="btn btn-secondary" href={RESUME_URL}><Icon name="file" />Read my résumé (PDF)</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 52rem;
+  }
+  .timeline li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+  }
+  .timeline li::before {
+    content: '';
+    position: absolute;
+    left: 7rem;
+    top: 0.55rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 0.2rem;
+    background: var(--yellow);
+    outline: 2px solid var(--bg);
+    transform: rotate(-6deg);
+  }
+  .timeline li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: calc(7rem + 0.3rem);
+    top: 1.6rem;
+    bottom: 0.2rem;
+    border-left: 2px dashed var(--dash);
+  }
+  .when {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  h3 {
+    font-size: 1.1875rem;
+    letter-spacing: -0.01em;
+  }
+  .timeline p:not(.when) {
+    margin-top: 0.375rem;
+    color: var(--muted);
+  }
+  .resume {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 36rem) {
+    .timeline li {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+      padding-left: 1.75rem;
+    }
+    .timeline li::before {
+      left: 0;
+    }
+    .timeline li:not(:last-child)::after {
+      left: 0.3rem;
+    }
+  }
+</style>
