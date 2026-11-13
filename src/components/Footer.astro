@@ -1,0 +1,55 @@
+---
+import { NAME, PROFILES, RESUME_URL, SOURCE_URL, SPONSORS_URL } from '../data/site';
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <nav aria-label="Profiles elsewhere">
+      <ul>
+        {
+          PROFILES.map((profile) => (
+            <li>
+              <a class="nav-link" href={profile.url} rel="me">
+                {profile.name}
+              </a>
+            </li>
+          ))
+        }
+        <li><a class="nav-link" href={SPONSORS_URL}>Sponsor my work</a></li>
+        <li><a class="nav-link" href={RESUME_URL}>Résumé</a></li>
+      </ul>
+    </nav>
+    <p>
+      © {new Date().getFullYear()} {NAME}. Built with Astro, hosted on GitHub Pages, <a class="nav-link" href={SOURCE_URL}>source on GitHub</a>.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    border-image: var(--rule) 1;
+    padding-block: 2.5rem calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  .inner {
+    display: grid;
+    gap: 1rem;
+    text-align: center;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  /* Same hover as the header menu (.nav-link in global.css). Inline-block makes the link's box as tall as the
+     line, like the header's, so the underline lands at the same distance from the text. */
+  a {
+    display: inline-block;
+  }
+</style>

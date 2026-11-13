@@ -1,0 +1,241 @@
+---
+import { BOOKING_URL, NAME, NAME_SHORT } from '../data/site';
+import Icon from './Icon.astro';
+import Mark from './Mark.astro';
+
+const NAV = [
+  { href: '#services', label: 'Services' },
+  { href: '#work', label: 'Work' },
+  { href: '#open-source', label: 'Open source' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#about', label: 'About' },
+];
+---
+
+<header class="header">
+  <div class="container inner">
+    <a class="brand" href="/" aria-label={`${NAME}, home`}>
+      <Mark size={36} />
+      <span class="name">
+        <span class="name-full">{NAME}</span>
+        {/* The link's aria-label already names it in full, so screen readers skip this one */}
+        <span class="name-short" aria-hidden="true">{NAME_SHORT}</span>
+      </span>
+    </a>
+    <nav aria-label="Sections">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a class="nav-link" href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="actions">
+      <button type="button" class="theme-toggle js-only" aria-label="Switch to dark theme" aria-keyshortcuts="Control+J" title="Switch theme (Ctrl+J)">
+        <Icon name="moon" class="icon-moon" />
+        <Icon name="sun" class="icon-sun" strokeWidth={2.6} />
+      </button>
+      <a class="btn btn-primary book" href={BOOKING_URL} aria-label="Book a call"><Icon name="video" /><span>Book a call</span></a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle')!;
+  const media = matchMedia('(prefers-color-scheme: dark)');
+  const current = () => root.dataset.theme ?? (media.matches ? 'dark' : 'light');
+  const label = () => toggle.setAttribute('aria-label', `Switch to ${current() === 'dark' ? 'light' : 'dark'} theme`);
+
+  // Keep the browser UI tint (theme-color) in line with a manual choice; without one, each meta's media query applies.
+  const syncThemeColor = () => {
+    const metas = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
+    const forced = metas.find((meta) => meta.dataset.scheme === root.dataset.theme)?.dataset.color;
+    for (const meta of metas) meta.content = forced ?? meta.dataset.color!;
+  };
+
+  label();
+  media.addEventListener('change', label);
+  const switchTheme = () => {
+    const next = current() === 'dark' ? 'light' : 'dark';
+    // Choosing the scheme the system already uses means "follow the system" again.
+    if (next === (media.matches ? 'dark' : 'light')) delete root.dataset.theme;
+    else root.dataset.theme = next;
+    try {
+      if (root.dataset.theme) localStorage.setItem('theme', next);
+      else localStorage.removeItem('theme');
+    } catch {}
+    label();
+    syncThemeColor();
+  };
+  toggle.addEventListener('click', switchTheme);
+  // Ctrl+J switches too (it overrides the browser's Downloads shortcut while the page has focus).
+  addEventListener('keydown', (event) => {
+    if (event.key.toLowerCase() !== 'j' || !event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) return;
+    if (event.repeat) return event.preventDefault();
+    event.preventDefault();
+    switchTheme();
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: light-dark(
+      color-mix(in srgb, var(--bg) 85%, transparent),
+      color-mix(in srgb, var(--bg) 75%, transparent)
+    );
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    border-image: var(--rule) 1;
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 4rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+    margin-right: auto;
+    min-width: 0;
+  }
+  .brand :global(svg) {
+    flex: none;
+  }
+  .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  nav ul {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  /* Header menu items: .nav-link (global.css), with the underline spanning the text, clear of the padding */
+  nav a {
+    --underline-inset: 0.625rem;
+    --underline-bottom: 0.375rem;
+    display: block;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  nav a:active {
+    transform: translateY(1px);
+  }
+  /* "About", the theme icon and the CTA are visually equidistant (1.75rem, glyph to glyph to button edge).
+     The link and toggle paddings (0.625rem each side) count towards it: the nav sits 0.5rem closer than the
+     header gap, and the toggle keeps 1.125rem + its 0.625rem inner padding from the CTA. */
+  nav {
+    margin-right: -0.5rem;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 1.125rem;
+  }
+  /* Sized and colored like the nav links next to it; on hover, only the icon brightens */
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  .theme-toggle:hover {
+    color: var(--text);
+  }
+  .theme-toggle:active {
+    transform: translateY(1px);
+  }
+  .theme-toggle :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .theme-toggle :global(.icon-sun) {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .theme-toggle :global(.icon-sun) {
+    display: block;
+  }
+  :global(:root[data-theme='dark']) .theme-toggle :global(.icon-moon) {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .theme-toggle :global(.icon-sun) {
+      display: block;
+    }
+    :global(:root:not([data-theme='light'])) .theme-toggle :global(.icon-moon) {
+      display: none;
+    }
+  }
+  .book {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 62rem) {
+    nav {
+      display: none;
+    }
+  }
+  /* Taller where the full menu shows (global.css raises scroll-padding-top to match) */
+  @media (min-width: 62.0625rem) {
+    .inner {
+      min-height: 5rem;
+    }
+    .brand {
+      --mark-size: 44px;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+    }
+  }
+  @media (max-width: 30rem) {
+    .name {
+      font-size: 1rem;
+    }
+    .book span {
+      display: none;
+    }
+    .book {
+      padding-inline: 0.625rem;
+    }
+  }
+  .name-short {
+    display: none;
+  }
+  /* Below 368px the full name no longer fits: the short one does, down to 320px */
+  @media (max-width: 23rem) {
+    .name-full {
+      display: none;
+    }
+    .name-short {
+      display: inline;
+    }
+  }
+</style>
