@@ -2,6 +2,7 @@
 import { BOOKING_URL, NAME, NAME_SHORT } from '../data/site';
 import Icon from './Icon.astro';
 import Mark from './Mark.astro';
+import MobileMenu from './MobileMenu.astro';
 
 const NAV = [
   { href: '#services', label: 'Services' },
@@ -14,6 +15,8 @@ const NAV = [
 
 <header class="header">
   <div class="container inner">
+    {/* Below 62rem the section links move into this menu */}
+    <MobileMenu items={NAV} />
     <a class="brand" href="/" aria-label={`${NAME}, home`}>
       <Mark size={36} />
       <span class="name">
@@ -200,6 +203,12 @@ const NAV = [
     font-size: 0.9375rem;
   }
 
+  /* The menu button (MobileMenu.astro), pulled out by its inner padding so the glyph lines up with the page
+     edge, and its gap to the mark matches the mark's gap to the name */
+  .inner > :global(.menu-toggle) {
+    margin-inline: -0.5rem -0.875rem;
+  }
+
   @media (max-width: 62rem) {
     nav {
       display: none;
@@ -226,17 +235,33 @@ const NAV = [
     .book {
       padding-inline: 0.625rem;
     }
+    /* With the menu button taking room on the left, the name needs it more than this gap does */
+    .actions {
+      gap: 0.5rem;
+    }
   }
   .name-short {
     display: none;
   }
-  /* Below 368px the full name no longer fits: the short one does, down to 320px */
-  @media (max-width: 23rem) {
+  /* Below 384px the full name no longer fits next to the menu button: the short one does, a size smaller
+     below 337px so it still fits at 320px */
+  @media (max-width: 23.9375rem) {
     .name-full {
       display: none;
     }
     .name-short {
       display: inline;
+    }
+  }
+  @media (max-width: 21rem) {
+    .name {
+      font-size: 0.875rem;
+    }
+    .inner {
+      gap: 0.75rem;
+    }
+    .inner > :global(.menu-toggle) {
+      margin-right: -0.625rem;
     }
   }
 </style>

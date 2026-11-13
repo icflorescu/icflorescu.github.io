@@ -1,0 +1,197 @@
+---
+// The section menu below 62rem, where the header hides its inline links: a button that opens a native
+// popover panel under the header. It opens, and closes on Esc or a tap outside, without JS.
+// Both elements render where the component is placed (the start of the header row); the panel itself
+// lives in the top layer once open, so its place in the markup doesn't affect the row.
+import Icon from './Icon.astro';
+
+interface Props {
+  items: { href: string; label: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<button type="button" class="menu-toggle" popovertarget="menu" aria-label="Menu">
+  <Icon name="menu" class="icon-menu" />
+  <Icon name="close" class="icon-close" />
+</button>
+<div id="menu" class="menu" popover>
+  <nav class="panel" aria-label="Sections">
+    <ul>
+      {
+        items.map((item) => (
+          <li>
+            <a class="nav-link" href={item.href}>{item.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  {/* Fills the rest of the screen, dimming the page; a tap on it closes the menu, without JS too */}
+  <button type="button" class="scrim" popovertarget="menu" popovertargetaction="hide" tabindex="-1" aria-hidden="true"></button>
+</div>
+
+<script>
+  // Picking a section closes the menu (without JS it stays open until Esc or a tap outside).
+  const menu = document.querySelector<HTMLElement>('#menu')!;
+  menu.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('a')) menu.hidePopover();
+  });
+</script>
+
+<style>
+  /* Sized and colored like the header's theme toggle; on hover, only the icon brightens */
+  .menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  .menu-toggle:hover {
+    color: var(--text);
+  }
+  .menu-toggle:active {
+    transform: translateY(1px);
+  }
+  .menu-toggle :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .menu-toggle :global(.icon-close),
+  .menu-toggle:has(+ .menu:popover-open) :global(.icon-menu) {
+    display: none;
+  }
+  .menu-toggle:has(+ .menu:popover-open) :global(.icon-close) {
+    display: block;
+  }
+
+  /* The popover covers the screen under the header (4rem below 62rem, plus its 1px rule), which stays sharp
+     so its button can close the menu. A column: the menu panel on top, the scrim filling the rest. */
+  .menu {
+    inset: calc(4rem + 1px) 0 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    overflow: hidden;
+    /* Here, not under :popover-open, so the column holds while the menu closes (otherwise panel and scrim
+       flash side by side during the exit) */
+    flex-direction: column;
+    /* Keeps the popover (and so its children's exit transitions) on screen until they finish */
+    transition:
+      overlay 0.15s allow-discrete,
+      display 0.15s allow-discrete;
+  }
+  .menu:popover-open {
+    display: flex;
+  }
+
+  /* Glass like the header. Scrolls on its own if taller than the screen (a phone in landscape). */
+  .panel {
+    flex: none;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.25rem var(--gutter) 0.75rem;
+    border-bottom: 1px solid var(--border);
+    border-image: var(--rule) 1;
+    background: light-dark(
+      color-mix(in srgb, var(--bg) 85%, transparent),
+      color-mix(in srgb, var(--bg) 75%, transparent)
+    );
+    backdrop-filter: blur(10px);
+  }
+  /* Dims and blurs the page under the panel */
+  .scrim {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: light-dark(rgb(0 0 0 / 0.35), rgb(0 0 0 / 0.55));
+    backdrop-filter: blur(6px);
+    cursor: default;
+  }
+
+  /* The panel slides down from under the header and fades in, the scrim fades in; both reverse, a bit
+     quicker, on the way out */
+  .panel,
+  .scrim {
+    opacity: 0;
+    transition:
+      opacity 0.15s ease-in,
+      transform 0.15s ease-in;
+  }
+  .panel {
+    transform: translateY(-0.75rem);
+  }
+  .menu:popover-open .panel,
+  .menu:popover-open .scrim {
+    opacity: 1;
+    transform: none;
+    transition-duration: 0.25s;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @starting-style {
+    .menu:popover-open .panel {
+      opacity: 0;
+      transform: translateY(-0.75rem);
+    }
+    .menu:popover-open .scrim {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu,
+    .panel,
+    .scrim {
+      transition-duration: 0s;
+    }
+    .panel {
+      transform: none;
+    }
+  }
+
+  /* No page scrolling while the menu is open (html keeps its scrollbar gutter, so nothing shifts) */
+  :global(html:has(#menu:popover-open)) {
+    overflow: hidden;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* .nav-link (global.css), larger and with taller tap targets than in the header row */
+  a {
+    --underline-bottom: 0.5rem;
+    display: inline-block;
+    padding: 0.625rem 0;
+    font-size: 1.0625rem;
+    font-weight: 500;
+  }
+  a:active {
+    transform: translateY(1px);
+  }
+
+  /* From 62rem the header shows its own links */
+  @media (min-width: 62.0625rem) {
+    .menu-toggle,
+    .menu {
+      display: none;
+    }
+  }
+</style>

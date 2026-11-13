@@ -37,7 +37,9 @@ Private context (content decisions, research notes, open items) lives in `CLAUDE
 - **Counters:** `Count.astro`. The real value stays in the HTML (for search engines and screen readers); an `aria-hidden` ticker shows the animation, zero-padded by `tick()` in `src/lib/format.ts` so the width never changes.
 - **Mark size:** `Mark.astro` reads an optional `--mark-size` from a parent (the header uses it on large screens).
 - **External links:** `src/middleware.ts` adds `target="_blank" rel="noopener"` at build time; don't add them by hand.
-- **Header name:** the full name, or `NAME_SHORT` below 368px; the link's `aria-label` always has the full name.
+- **Header name:** the full name, or `NAME_SHORT` below 384px (a size smaller below 337px); the link's `aria-label` always has the full name. The breakpoints are measured, so re-measure after changing anything in the header row.
+- **Mobile menu:** `MobileMenu.astro`, below 62rem. A native `popover` (`#menu`) under the header: a column with the glass link panel on top and a scrim (a hide-action button) dimming the rest. It works without JS; a script only closes it when a link is picked. Page scroll locks while it's open, and `html` keeps `scrollbar-gutter: stable` so the lock shifts nothing. Its top offset assumes the 4rem header height below 62rem.
+- **Testing on phone widths:** headless Chromium reserves the scrollbar gutter (15px), so use `isMobile: true` in Playwright, or the header measures too narrow. Playwright's `click()` scrolls the page; use `mouse.click` at coordinates to check scroll behavior.
 - **Minified CSS:** Lightning CSS drops an unprefixed declaration followed by its `-webkit-` twin. Write only the unprefixed property; the build adds prefixes its browser targets need.
 
 ## Design rules to keep
