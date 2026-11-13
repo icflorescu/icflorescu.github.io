@@ -38,6 +38,7 @@ Private context (content decisions, research notes, open items) lives in `CLAUDE
 - **Mark size:** `Mark.astro` reads an optional `--mark-size` from a parent (the header uses it on large screens).
 - **External links:** `src/middleware.ts` adds `target="_blank" rel="noopener"` at build time; don't add them by hand.
 - **Header name:** the full name, or `NAME_SHORT` below 368px; the link's `aria-label` always has the full name.
+- **Minified CSS:** Lightning CSS drops an unprefixed declaration followed by its `-webkit-` twin. Write only the unprefixed property; the build adds prefixes its browser targets need.
 
 ## Design rules to keep
 

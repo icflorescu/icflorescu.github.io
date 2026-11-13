@@ -90,8 +90,9 @@ const NAV = [
       color-mix(in srgb, var(--bg) 85%, transparent),
       color-mix(in srgb, var(--bg) 75%, transparent)
     );
+    /* No hand-written -webkit- copy: the build adds one if its browser targets need it, and Lightning CSS
+       drops this unprefixed line when a prefixed one follows it (which is how the blur went missing) */
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
     border-image: var(--rule) 1;
   }
