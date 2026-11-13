@@ -86,3 +86,7 @@ Actions are pinned to commit SHAs, with the version in a comment.
 GitHub Pages serves every repository of mine that has Pages enabled at `icflorescu.github.io/<repo-name>/`, so this site must never create a file or folder named after one of my repositories. It only uses `/`, the icon and meta files at the root (`favicon.ico`, `icon.svg`, `apple-touch-icon.png`, `icon-*.png`, `site.webmanifest`, `og.png`, `robots.txt`, `sitemap.xml`) and `/_astro/` for hashed build assets.
 
 Because crawlers only read `robots.txt` at the root of a host, this site's `robots.txt` also lists the project docs sitemaps (`src/data/site.ts` → `PROJECT_SITEMAPS`).
+
+## License
+
+The source code is [MIT-licensed](LICENSE). The site's content (the text, my photo, the "icf" mark and its icons, the social image and the product screenshots) is © Ionuț-Cristian Florescu, all rights reserved.
