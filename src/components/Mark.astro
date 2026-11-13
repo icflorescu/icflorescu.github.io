@@ -1,0 +1,50 @@
+---
+// The "icf" mark: a hand-lettered sticky note inside a dashed selection box.
+// Uses both of Ionuț's drawings (src/assets/mark) as cached image files, and shows the one matching the
+// active color scheme. (Inlining them would add ~19 kB of SVG paths to the HTML per copy.)
+import dark from '../assets/mark/icf-dark.svg';
+import light from '../assets/mark/icf-light.svg';
+
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 40, class: className } = Astro.props;
+---
+
+<!-- A parent can resize it with --mark-size (e.g. the header on large screens); `size` is the default -->
+<span class:list={['mark', className]} style={`--mark-default:${size}px`}>
+  <img class="mark-light" src={light.src} width={size} height={size} alt="" />
+  <img class="mark-dark" src={dark.src} width={size} height={size} alt="" />
+</span>
+
+<style>
+  .mark {
+    display: inline-block;
+    flex: none;
+    width: var(--mark-size, var(--mark-default));
+    height: var(--mark-size, var(--mark-default));
+    line-height: 0;
+  }
+  .mark img {
+    width: 100%;
+    height: 100%;
+  }
+  .mark :global(.mark-dark) {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .mark :global(.mark-dark) {
+    display: block;
+  }
+  :global(:root[data-theme='dark']) .mark :global(.mark-light) {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .mark :global(.mark-dark) {
+      display: block;
+    }
+    :global(:root:not([data-theme='light'])) .mark :global(.mark-light) {
+      display: none;
+    }
+  }
+</style>
