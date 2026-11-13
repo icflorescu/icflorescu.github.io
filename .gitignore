@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+out/
+.next/
+.astro/
+
+# misc
+.DS_Store
+*.log
+.env*
+
+# claude code
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+
+# research notes and raw data exports: private, not for a public repo
+research/
+
+# private notes for Claude Code (CLAUDE.md itself is meant to be committed)
+CLAUDE.local.md
