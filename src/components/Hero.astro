@@ -1,0 +1,215 @@
+---
+import { Image } from 'astro:assets';
+import { AVATAR_URL, BOOKING_URL, NAME } from '../data/site';
+import { getStats } from '../data/stats';
+import Count from './Count.astro';
+import EmailReveal from './EmailReveal.astro';
+import Icon from './Icon.astro';
+
+const stats = await getStats();
+const yearsOnline = new Date().getFullYear() - 1998;
+
+const FACTS = [
+  {
+    count: { to: yearsOnline, from: 1 },
+    before: '',
+    after: '+ years',
+    label: 'building for the web, starting in a Bucharest Internet café in 1998',
+  },
+  {
+    count: { to: 2013, from: new Date().getFullYear() },
+    before: 'Since ',
+    after: '',
+    label: 'technical partner in an online automotive marketplace',
+  },
+  {
+    count: { to: stats.monthlyDownloads, format: 'compact' },
+    before: '',
+    after: '',
+    label: 'npm downloads a month for my open-source packages',
+  },
+  {
+    count: { to: stats.totalStars, format: 'thousands' },
+    before: '',
+    after: '',
+    label: 'GitHub stars on my open-source projects',
+  },
+] as const;
+---
+
+<section class="hero">
+  <div class="container grid">
+    <p class="eyebrow">{NAME} · Bucharest, Romania, EU</p>
+    <div class="text">
+      <h1>
+        Hands-on <span class="hl">fractional CTO</span>, product builder and open&#8209;source author.
+      </h1>
+      <p class="lead">
+        I take software products from a blank repo to production, and stay to run them for a decade. I still write
+        production code; I've also learned which code isn't worth writing.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href={BOOKING_URL}><Icon name="video" />Book a call</a>
+        <EmailReveal />
+      </div>
+    </div>
+    <div class="portrait">
+      <span class="photo">
+        <Image
+          src={AVATAR_URL}
+          alt={`Portrait of ${NAME}`}
+          width={320}
+          height={320}
+          densities={[1, 2]}
+          loading="eager"
+          fetchpriority="high"
+          data-fade
+        />
+      </span>
+    </div>
+  </div>
+  <div class="container">
+    <ul class="facts">
+      {
+        FACTS.map((fact) => (
+          <li>
+            <strong>
+              {fact.before}
+              <Count {...fact.count} />
+              {fact.after}
+            </strong>
+            <span>{fact.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 8vw, 6rem) clamp(2.5rem, 6vw, 4rem);
+  }
+  /* The eyebrow spans both columns, so the portrait's top lines up with the headline's */
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .grid > .eyebrow {
+    grid-column: 1 / -1;
+  }
+  h1 {
+    font-size: clamp(2.375rem, 6.2vw, 4.25rem);
+    letter-spacing: -0.035em;
+    max-width: 21ch;
+  }
+  .lead {
+    margin-top: 1.5rem;
+    font-size: clamp(1.125rem, 2vw, 1.3125rem);
+    color: var(--muted);
+    max-width: 38rem;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .portrait {
+    /* How far the photo and its yellow backing sit above the dashed frame's center, overlapping its top edge */
+    --lift: 0.25rem;
+    position: relative;
+    width: clamp(10rem, 24vw, 18rem);
+    /* The photo's lift (--lift + its 0.5rem offset), plus ~0.23em of the headline: its capitals start that far
+       below its line box, and the photo's top edge is level with them */
+    margin: calc(0.75rem + 0.23 * clamp(2.375rem, 6.2vw, 4.25rem)) 1rem 0 0;
+  }
+  /* The dashed selection box from the mark, framing the portrait */
+  .portrait::before {
+    content: '';
+    position: absolute;
+    inset: -0.875rem 0.875rem 0.875rem -0.875rem;
+    border: 3px dashed var(--dash);
+    border-radius: 1.25rem;
+  }
+  .portrait::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--highlight);
+    border-radius: 1rem;
+    transform: translateY(calc(-1 * var(--lift))) rotate(2.5deg);
+    z-index: -1;
+  }
+  /* Dark while the photo loads; the photo fades in over it (data-fade, global.css) */
+  .photo {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: #1a1a18;
+    transform: translateY(calc(-1 * var(--lift))) rotate(2.5deg) translate(-0.5rem, -0.5rem);
+  }
+  /* Light mode: a wash of the page color lifts the dark photo (the same as showing it at 80% opacity on
+     the page, as on swapp.ro). Dark mode: a border sets it off the page, drawn inside its edge. */
+  .photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: light-dark(color-mix(in srgb, var(--bg) 20%, transparent), transparent);
+    border: 2px solid light-dark(transparent, var(--border));
+    border-radius: inherit;
+  }
+  .photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+    padding: 0;
+    list-style: none;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .facts li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.125rem 1.25rem;
+    background: var(--surface);
+  }
+  .facts strong {
+    font-family: var(--font-display);
+    /* The previous size on phones, where "28+ years" and "Since 2013" would otherwise wrap */
+    font-size: clamp(1.625rem, 4vw, 1.875rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .facts span {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 48rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .portrait {
+      order: -1;
+      width: 11rem;
+      margin: 0.875rem 0 clamp(2rem, 5vw, 4rem) 0.875rem;
+    }
+    .facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

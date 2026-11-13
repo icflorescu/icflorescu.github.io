@@ -1,0 +1,89 @@
+---
+// Shows a button instead of my email address; the address is decoded in the browser only when asked for.
+// Without JavaScript, it falls back to pointing at my GitHub profile, where the address is listed.
+import { EMAIL_ENCODED } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  variant?: 'primary' | 'secondary';
+}
+const { variant = 'secondary' } = Astro.props;
+---
+
+<span class="email-reveal" data-email={EMAIL_ENCODED}>
+  <button type="button" class:list={['btn', `btn-${variant}`, 'reveal', 'js-only']}>
+    <Icon name="mail" />
+    Email me
+  </button>
+  <span class="revealed" hidden>
+    <a class:list={['btn', `btn-${variant}`, 'address']} href="#"><Icon name="mail" /><span></span></a>
+    <button type="button" class="btn btn-secondary copy" aria-label="Copy email address">
+      <Icon name="copy" class="icon-copy" />
+      <Icon name="check" class="icon-check" />
+    </button>
+  </span>
+  <a class:list={['btn', `btn-${variant}`, 'fallback', 'no-js']} href="https://github.com/icflorescu">
+    <Icon name="mail" />
+    Email: it's on my GitHub profile
+  </a>
+</span>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('.email-reveal')) {
+    const reveal = root.querySelector<HTMLButtonElement>('.reveal')!;
+    const revealed = root.querySelector<HTMLElement>('.revealed')!;
+    const address = root.querySelector<HTMLAnchorElement>('.address')!;
+    const copy = root.querySelector<HTMLButtonElement>('.copy')!;
+
+    const decode = () => [...atob(root.dataset.email ?? '')].reverse().join('');
+
+    reveal.addEventListener('click', () => {
+      const email = decode();
+      address.href = `mailto:${email}`;
+      address.querySelector('span')!.textContent = email;
+      reveal.hidden = true;
+      revealed.hidden = false;
+      address.focus();
+    });
+
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(decode());
+        copy.dataset.copied = '';
+        copy.setAttribute('aria-label', 'Copied');
+        setTimeout(() => {
+          delete copy.dataset.copied;
+          copy.setAttribute('aria-label', 'Copy email address');
+        }, 2000);
+      } catch {
+        // Clipboard access denied: the address is visible and selectable anyway.
+      }
+    });
+  }
+</script>
+
+<style>
+  .email-reveal,
+  .revealed {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .revealed[hidden],
+  .btn[hidden] {
+    display: none;
+  }
+  .address span {
+    overflow-wrap: anywhere;
+  }
+  .copy {
+    padding-inline: 0.875rem;
+  }
+  .copy :global(.icon-check),
+  .copy[data-copied] :global(.icon-copy) {
+    display: none;
+  }
+  .copy[data-copied] :global(.icon-check) {
+    display: block;
+  }
+</style>
