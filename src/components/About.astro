@@ -1,0 +1,120 @@
+---
+const STACK = [
+  'TypeScript',
+  'React',
+  'TanStack Start, Router, Query & Form',
+  'Next.js',
+  'Svelte & SvelteKit',
+  'Node.js & Bun',
+  'tRPC',
+  'PostgreSQL & Drizzle',
+  'Mantine',
+  'shadcn/ui & Tailwind CSS',
+  'Docker & Caddy',
+  'PocketBase',
+];
+
+const QUOTES = [
+  'When it comes to code, less is more.',
+  'AI is inevitable. The returns on it aren’t.',
+  'If coffee were a programming language, I’d be fluent.',
+];
+---
+
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="container grid">
+    <p class="eyebrow">About me</p>
+    <div>
+      <h2 id="about-title">Curious by nature</h2>
+      <div class="prose">
+        <p>
+          I like understanding how things work, and then making them work better. That curiosity got me from an
+          Internet café in 1998 to insurance platforms, marketplaces, tax software and a fair amount of open source.
+        </p>
+        <p>
+          I read a lot: fantasy, fiction, history and tech. I was a consultant and co-editor for <a
+            href="https://kingshost.github.io/">The King’s Host</a
+          >, a fantasy novel. Off-screen, you’ll find me drinking good coffee or on a mountain trail.
+        </p>
+        <p>
+          I like open source, lazy mornings and honest conversations. I don’t like hypocrisy, xenophobia, willful
+          ignorance, or people talking bullshit.
+        </p>
+      </div>
+      <ul class="quotes">
+        {QUOTES.map((quote) => <li>“{quote}”</li>)}
+      </ul>
+    </div>
+    <div class="card stack">
+      <h3>What I build with these days</h3>
+      <ul class="chips">
+        {STACK.map((item) => <li>{item}</li>)}
+      </ul>
+      <p>
+        Before that: PHP and MySQL around Y2K, Java/J2EE, .NET/C#, Oracle and SQL Server in the 2000s, CoffeeScript back
+        when JavaScript had no async/await, and more templating languages and frameworks than I care to remember.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The eyebrow spans both columns, so the card's top lines up with the heading's */
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .grid > .eyebrow {
+    grid-column: 1 / -1;
+  }
+  h2 {
+    font-size: clamp(1.875rem, 4.5vw, 2.75rem);
+  }
+  .prose {
+    margin-top: 1.5rem;
+    max-width: 40rem;
+  }
+  .prose p + p {
+    margin-top: 1rem;
+  }
+  .quotes {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.625rem;
+  }
+  .quotes li {
+    font-size: 1.125rem;
+    font-style: italic;
+  }
+  .stack {
+    padding: 1.75rem;
+    /* Level with the top of the heading's capitals, not its line box: they start ~0.21em lower */
+    margin-top: calc(0.21 * clamp(1.875rem, 4.5vw, 2.75rem));
+  }
+  .stack h3 {
+    font-size: 1.1875rem;
+    margin-bottom: 1rem;
+  }
+  .stack .chips li {
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+  .stack p {
+    margin-top: 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 52rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .stack {
+      margin-top: clamp(2rem, 5vw, 4rem);
+    }
+  }
+</style>
