@@ -170,8 +170,10 @@ const NAV = [
     cursor: pointer;
     transition: color 0.15s ease;
   }
-  .theme-toggle:hover {
-    color: var(--text);
+  @media (hover: hover) {
+    .theme-toggle:hover {
+      color: var(--text);
+    }
   }
   .theme-toggle:active {
     transform: translateY(1px);

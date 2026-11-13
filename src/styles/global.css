@@ -138,8 +138,11 @@ a {
 :where(p, li, figcaption) > a:not([class]) {
   transition: color 0.15s ease;
 }
-:where(p, li, figcaption) > a:not([class]):hover {
-  color: var(--link-hover);
+/* Hover effects only where there's a real pointer: on touch screens :hover sticks after a tap */
+@media (hover: hover) {
+  :where(p, li, figcaption) > a:not([class]):hover {
+    color: var(--link-hover);
+  }
 }
 
 /* Navigation links (header menu, footer): no underline at rest; on hover the text brightens and an accent
@@ -170,12 +173,14 @@ a {
   transform: scaleX(0);
   transition: transform 0.2s ease;
 }
-.nav-link:hover {
-  color: var(--text);
-}
-.nav-link:hover::after,
-a:hover > .underline-grow::after {
-  transform: scaleX(1);
+@media (hover: hover) {
+  .nav-link:hover {
+    color: var(--text);
+  }
+  .nav-link:hover::after,
+  a:hover > .underline-grow::after {
+    transform: scaleX(1);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .nav-link::after,
@@ -229,8 +234,10 @@ a:hover > .underline-grow::after {
       opacity 0.6s ease,
       scale 0.3s ease;
   }
-  .img-link:hover img {
-    scale: 1.02;
+  @media (hover: hover) {
+    .img-link:hover img {
+      scale: 1.02;
+    }
   }
 }
 
@@ -302,10 +309,12 @@ a:hover > .underline-grow::after {
   background: var(--yellow);
   color: var(--ink);
 }
-.btn-primary:hover {
-  /* Dark mode: dashes in the color behind the button, so they look like bites out of its edge */
-  border-color: light-dark(var(--dash-on-yellow), var(--backdrop));
-  border-style: dashed;
+@media (hover: hover) {
+  .btn-primary:hover {
+    /* Dark mode: dashes in the color behind the button, so they look like bites out of its edge */
+    border-color: light-dark(var(--dash-on-yellow), var(--backdrop));
+    border-style: dashed;
+  }
 }
 .btn-secondary {
   background: transparent;
@@ -315,9 +324,11 @@ a:hover > .underline-grow::after {
   border-style: solid;
   transition: none;
 }
-.btn-secondary:hover {
-  border-color: var(--dash);
-  border-style: dashed;
+@media (hover: hover) {
+  .btn-secondary:hover {
+    border-color: var(--dash);
+    border-style: dashed;
+  }
 }
 .btn svg {
   width: 1.15em;

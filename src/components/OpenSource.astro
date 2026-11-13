@@ -273,8 +273,10 @@ const MORE = [
     color: var(--muted);
     transition: color 0.15s ease;
   }
-  h3 a:hover :global(svg) {
-    color: var(--text);
+  @media (hover: hover) {
+    h3 a:hover :global(svg) {
+      color: var(--text);
+    }
   }
 
   .featured {

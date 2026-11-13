@@ -146,8 +146,10 @@ const PRODUCTS: Product[] = [
     color: var(--muted);
     transition: color 0.15s ease;
   }
-  h3 a:hover :global(svg) {
-    color: var(--text);
+  @media (hover: hover) {
+    h3 a:hover :global(svg) {
+      color: var(--text);
+    }
   }
   .intro {
     margin-top: 1rem;

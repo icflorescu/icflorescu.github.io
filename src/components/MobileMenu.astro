@@ -56,8 +56,10 @@ const { items } = Astro.props;
     cursor: pointer;
     transition: color 0.15s ease;
   }
-  .menu-toggle:hover {
-    color: var(--text);
+  @media (hover: hover) {
+    .menu-toggle:hover {
+      color: var(--text);
+    }
   }
   .menu-toggle:active {
     transform: translateY(1px);
