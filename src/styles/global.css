@@ -36,6 +36,8 @@
   --shot-bg: light-dark(color-mix(in srgb, #ffe52e 22%, #fff), color-mix(in srgb, #c4ad28 22%, #232320));
   /* In dark mode, the same olive as the sticky note in the dark mark */
   --highlight: light-dark(#ffe52e, #5d531b);
+  /* Selected text: the highlight faded into the page (towards white in light mode, the background in dark mode) */
+  --selection: light-dark(color-mix(in srgb, #ffe52e 50%, #fff), color-mix(in srgb, #5d531b 60%, #121211));
 
   --font-body: 'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Bricolage Grotesque Variable', var(--font-body);
@@ -257,7 +259,7 @@ a:hover > .underline-grow::after {
 
 /* Selected text gets the highlighter-pen color too */
 ::selection {
-  background: var(--highlight);
+  background: var(--selection);
   color: light-dark(var(--ink), #eeece4);
 }
 
