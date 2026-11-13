@@ -1,0 +1,138 @@
+---
+import bricolageLatinExt from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-ext-wght-normal.woff2?url';
+import bricolageLatin from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import '../styles/global.css';
+import { AVATAR_URL, DESCRIPTION, HANDLE, NAME, NAME_ASCII, PROFILES, SITE_URL, TITLE } from '../data/site';
+
+// Fonts used above the fold, preloaded so they don't wait for layout to be discovered.
+// (Inter's latin-ext subset is left out: it's large, and only a few characters below the fold need it.)
+const PRELOADED_FONTS = [bricolageLatin, bricolageLatinExt, interLatin];
+
+const ogImage = new URL('og.png', SITE_URL).href;
+
+// Google takes the site name and favicon shown for every page on this host (project docs sites included)
+// from the home page, so the WebSite name here is deliberate.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}#website`,
+      url: SITE_URL,
+      name: NAME,
+      alternateName: [HANDLE, NAME_ASCII],
+      description: DESCRIPTION,
+      inLanguage: 'en',
+      publisher: { '@id': `${SITE_URL}#person` },
+    },
+    {
+      '@type': 'ProfilePage',
+      '@id': `${SITE_URL}#profile`,
+      url: SITE_URL,
+      name: TITLE,
+      isPartOf: { '@id': `${SITE_URL}#website` },
+      mainEntity: { '@id': `${SITE_URL}#person` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}#person`,
+      name: NAME,
+      alternateName: [NAME_ASCII, HANDLE],
+      givenName: 'Ionuț-Cristian',
+      familyName: 'Florescu',
+      url: SITE_URL,
+      image: AVATAR_URL,
+      jobTitle: 'Fractional CTO',
+      description: DESCRIPTION,
+      address: { '@type': 'PostalAddress', addressLocality: 'Bucharest', addressCountry: 'RO' },
+      knowsLanguage: ['en', 'ro'],
+      knowsAbout: [
+        'TypeScript',
+        'React',
+        'TanStack Start',
+        'Next.js',
+        'Node.js',
+        'PostgreSQL',
+        'tRPC',
+        'Mantine',
+        'Software architecture',
+        'Fractional CTO services',
+      ],
+      sameAs: PROFILES.map((profile) => profile.url),
+    },
+  ],
+};
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{TITLE}</title>
+    <meta name="description" content={DESCRIPTION} />
+    <meta name="author" content={NAME} />
+    <link rel="canonical" href={SITE_URL} />
+    {PRELOADED_FONTS.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#faf8f3" data-scheme="light" data-color="#faf8f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121211" data-scheme="dark" data-color="#121211" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={NAME} />
+    <meta property="og:title" content={TITLE} />
+    <meta property="og:description" content={DESCRIPTION} />
+    <meta property="og:url" content={SITE_URL} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${NAME}: hands-on fractional CTO, product builder and open-source author`} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="profile:first_name" content="Ionuț-Cristian" />
+    <meta property="profile:last_name" content="Florescu" />
+    <meta property="profile:username" content={HANDLE} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={`@${HANDLE}`} />
+    <meta name="twitter:creator" content={`@${HANDLE}`} />
+    <meta name="twitter:title" content={TITLE} />
+    <meta name="twitter:description" content={DESCRIPTION} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Before first paint: flag JS support, and apply a saved color-scheme choice (no flash of the wrong theme) -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.dataset.theme = theme;
+          // Tint the browser UI (e.g. the mobile address bar) to match the chosen theme, not the system one
+          const metas = document.querySelectorAll('meta[name="theme-color"]');
+          const color = [...metas].find((meta) => meta.dataset.scheme === theme).dataset.color;
+          for (const meta of metas) meta.content = color;
+        }
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+    <script>
+      // Fade in images marked data-fade (see global.css). Lazy ones load later and fade in as they arrive; ones
+      // already loaded (or failed) before this ran still fade, since they've been hidden from the first paint.
+      for (const image of document.querySelectorAll<HTMLImageElement>('img[data-fade]')) {
+        const show = () => requestAnimationFrame(() => image.setAttribute('data-loaded', ''));
+        if (image.complete) show();
+        else {
+          image.addEventListener('load', show, { once: true });
+          image.addEventListener('error', show, { once: true });
+        }
+      }
+    </script>
+  </body>
+</html>

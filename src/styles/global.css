@@ -1,0 +1,380 @@
+@import '@fontsource-variable/inter';
+/* Real italics (the About quotes). Only the subsets the italic text uses get downloaded, and none is preloaded */
+@import '@fontsource-variable/inter/wght-italic.css';
+@import '@fontsource-variable/bricolage-grotesque';
+
+/* Arial, adjusted to Inter's metrics, so text barely moves when the web font swaps in */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica');
+  size-adjust: 107.06%;
+  ascent-override: 90.49%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+}
+
+:root {
+  color-scheme: light dark;
+
+  /* Dark mode gets a deeper yellow and a softer off-white, so neither glares on the near-black background */
+  --yellow: light-dark(#ffe52e, #c4ad28);
+  --ink: #111;
+  --bg: light-dark(#faf8f3, #121211);
+  --surface: light-dark(#fff, #232320);
+  --text: light-dark(#3a3935, #c9c7bf);
+  --muted: light-dark(#5b5a55, #8d8b84);
+  --border: light-dark(#e3e0d6, #45443e);
+  /* Dashed lines (hover borders and decorative frames): softer than the text, but still clearly drawn */
+  --dash: light-dark(#87847a, #8b8a83);
+  --dash-on-yellow: rgb(17 17 17 / 0.55);
+  /* Whatever is behind an element: the page, or a card (which sets it to its own surface) */
+  --backdrop: var(--bg);
+  --accent-line: light-dark(#d4b300, #c4ad28);
+  /* Hovered links in running text: the accent, deep enough in light mode to stay readable */
+  --link-hover: light-dark(#8a6d00, #c4ad28);
+  /* Panels behind screenshots in two-tone cards: the same 22% of the yellow, over the card color */
+  --shot-bg: light-dark(color-mix(in srgb, #ffe52e 22%, #fff), color-mix(in srgb, #c4ad28 22%, #232320));
+  /* In dark mode, the same olive as the sticky note in the dark mark */
+  --highlight: light-dark(#ffe52e, #5d531b);
+
+  --font-body: 'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', var(--font-body);
+
+  --radius: 0.75rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --max: 72rem;
+  /* Hairlines between header, sections and footer: solid across the content column, fading out
+     over --rule-fade past it on each side. Beyond the screen on phones, so there they run edge to edge. */
+  --rule-edge: min(50%, var(--max) / 2);
+  --rule-fade: 8vw;
+}
+/* Declared on each element that draws a hairline, so it picks up that element's --rule-fade */
+:root,
+.section + .section {
+  --rule: linear-gradient(
+    to right,
+    transparent calc(50% - var(--rule-edge) - var(--rule-fade)),
+    var(--border) calc(50% - var(--rule-edge)),
+    var(--border) calc(50% + var(--rule-edge)),
+    transparent calc(50% + var(--rule-edge) + var(--rule-fade))
+  );
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+/* The header is 5rem tall from here (Header.astro): in-page links stop 1rem below it */
+@media (min-width: 62.0625rem) {
+  html {
+    scroll-padding-top: 6rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-feature-settings: 'cv11', 'ss01';
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Links take the surrounding text color (or --link, where a component sets one) with the browser's default
+   underline. In running text, hovering turns them gold. */
+a {
+  color: var(--link, currentColor);
+  text-decoration-line: underline;
+}
+:where(p, li, figcaption) > a:not([class]) {
+  transition: color 0.15s ease;
+}
+:where(p, li, figcaption) > a:not([class]):hover {
+  color: var(--link-hover);
+}
+
+/* Navigation links (header menu, footer): no underline at rest; on hover the text brightens and an accent
+   underline grows from the center. --underline-inset and --underline-bottom place it under the text when the
+   link has padding.
+   .underline-grow gives any text inside a link the same underline, e.g. a title next to an icon. */
+.nav-link {
+  position: relative;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.underline-grow {
+  position: relative;
+  /* Just under the text, about as far below it as in the header menu, at any font size */
+  --underline-bottom: calc(-0.07em - 2px);
+}
+.nav-link::after,
+.underline-grow::after {
+  content: '';
+  position: absolute;
+  left: var(--underline-inset, 0);
+  right: var(--underline-inset, 0);
+  bottom: var(--underline-bottom, 0);
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent-line);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+.nav-link:hover {
+  color: var(--text);
+}
+.nav-link:hover::after,
+a:hover > .underline-grow::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after,
+  .underline-grow::after {
+    transition: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Set by an inline script in <head>, so these apply from the first paint */
+:root:not(.js) .js-only,
+:root.js .no-js {
+  display: none !important;
+}
+
+/* Images marked data-fade fade in once loaded (Base.astro sets data-loaded). Hidden only while JS runs,
+   so without it they simply show. */
+:root.js img[data-fade] {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+:root.js img[data-fade][data-loaded] {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root.js img[data-fade] {
+    transition: none;
+  }
+}
+
+/* Screenshots that link somewhere grow a little on hover (clipped where their container clips). The
+   transition repeats the fade-in's, which it would otherwise replace on faded images. */
+@media (prefers-reduced-motion: no-preference) {
+  .img-link img {
+    transition: scale 0.3s ease;
+  }
+  :root.js .img-link img[data-fade] {
+    transition:
+      opacity 0.6s ease,
+      scale 0.3s ease;
+  }
+  .img-link:hover img {
+    scale: 1.02;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -3rem;
+  z-index: 100;
+  background: var(--yellow);
+  color: var(--ink);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Selected text gets the highlighter-pen color too */
+::selection {
+  background: var(--highlight);
+  color: light-dark(var(--ink), #eeece4);
+}
+
+/* Highlighter-pen emphasis, borrowed from the yellow of the mark */
+.hl {
+  background: linear-gradient(transparent 58%, var(--highlight) 58%, var(--highlight) 92%, transparent 92%);
+  padding-inline: 0.08em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.875rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.625rem;
+  /* Dashed even when transparent: border-style can't be animated, so a solid one would flash on hover-out */
+  border: 2px dashed transparent;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+/* A pressed feel: buttons sink by a pixel while clicked */
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.btn-primary:hover {
+  /* Dark mode: dashes in the color behind the button, so they look like bites out of its edge */
+  border-color: light-dark(var(--dash-on-yellow), var(--backdrop));
+  border-style: dashed;
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+  /* A visible solid border at rest that turns dashed on hover: switch instantly, a fade would show solid */
+  border-style: solid;
+  transition: none;
+}
+.btn-secondary:hover {
+  border-color: var(--dash);
+  border-style: dashed;
+}
+.btn svg {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+/* Sections */
+.section {
+  padding-block: clamp(3.5rem, 9vw, 6.5rem);
+}
+.section + .section {
+  /* A tad shorter between sections than below the header and above the footer */
+  --rule-fade: 6vw;
+  border-top: 1px solid var(--border);
+  border-image: var(--rule) 1;
+}
+.section-head {
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.section-head h2 {
+  font-size: clamp(1.875rem, 4.5vw, 2.75rem);
+}
+.section-head p {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  color: var(--muted);
+}
+
+.card {
+  --backdrop: var(--surface);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.chips li {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
