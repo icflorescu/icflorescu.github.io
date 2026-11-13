@@ -1,4 +1,4 @@
-# icflorescu.github.io
+# Ionuț-Cristian Florescu (aka icflorescu)
 
 [![Ionuț-Cristian Florescu: hands-on fractional CTO, product builder and open-source author](public/og.png)](https://icflorescu.github.io/)
 
@@ -12,11 +12,11 @@ This is the source of [my personal website](https://icflorescu.github.io/). I'm 
 
 I've been building for the web since 1998: insurance platforms, marketplaces, tax software and a fair amount of open source, including [Mantine ContextMenu](https://icflorescu.github.io/mantine-contextmenu/) and [tRPC-SvelteKit](https://icflorescu.github.io/trpc-sveltekit/).
 
-## swapp.ro, my own product
+## My own product — swapp.ro
 
 [![The swapp.ro dashboard: deadlines, overdue invoices and money owed, at a glance](src/assets/screens/swapp-dashboard.png)](https://swapp.ro/)
 
-[swapp.ro](https://swapp.ro/) is invoicing and single-entry accounting for Romanian freelancers (PFA, ÎI, PFI) who aren't VAT-registered. You record each transaction once, and everything that follows from it is worked out for you:
+[Swapp.ro](https://swapp.ro/) is invoicing and single-entry accounting for Romanian freelancers (PFA, ÎI, PFI) who aren't VAT-registered. You record each transaction once, and everything that follows from it is worked out for you:
 
 - invoices sent through ANAF's e-Factura, with supplier invoices collected in the background;
 - the mandatory ledgers, always up to date, and the figures for the D212, D390 and D301 returns, with their due dates;
@@ -47,14 +47,14 @@ bun install
 bun run dev        # http://localhost:4321
 ```
 
-| Script | What it does |
-| --- | --- |
-| `bun run dev` | Starts the dev server |
-| `bun run build` | Builds the static site into `dist/` |
-| `bun run preview` | Serves the built site locally |
-| `bun run check` | Type-checks (`astro check`) and lints/format-checks ([Biome](https://biomejs.dev/)) |
-| `bun run format` | Applies Biome's formatting and safe fixes |
-| `bun run generate-images` | Regenerates the favicon set and the social image in `public/` |
+| Script                    | What it does                                                                        |
+| ------------------------- | ----------------------------------------------------------------------------------- |
+| `bun run dev`             | Starts the dev server                                                               |
+| `bun run build`           | Builds the static site into `dist/`                                                 |
+| `bun run preview`         | Serves the built site locally                                                       |
+| `bun run check`           | Type-checks (`astro check`) and lints/format-checks ([Biome](https://biomejs.dev/)) |
+| `bun run format`          | Applies Biome's formatting and safe fixes                                           |
+| `bun run generate-images` | Regenerates the favicon set and the social image in `public/`                       |
 
 #### Live figures
 
