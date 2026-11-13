@@ -1,0 +1,179 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import leasingsh from '../assets/screens/leasingsh.png';
+import swapp from '../assets/screens/swapp-dashboard.png';
+import Icon from './Icon.astro';
+
+type Product = {
+  name: string;
+  url: string;
+  role: string;
+  image: ImageMetadata;
+  alt: string;
+  intro: string;
+  points: string[];
+  stack: string[];
+};
+
+const PRODUCTS: Product[] = [
+  {
+    name: 'swapp.ro',
+    url: 'https://swapp.ro/',
+    role: 'Founder · my own product',
+    image: swapp,
+    alt: 'The swapp.ro dashboard: deadlines, overdue invoices and money owed, at a glance',
+    intro:
+      "Invoicing and single-entry accounting for Romanian freelancers (PFA, ÎI, PFI) who aren't VAT-registered. You record each transaction once, and everything that follows from it is worked out for you. Built in 2021 for my own books, rebuilt from scratch in 2026, solo, in five months: product, design, code and operations.",
+    points: [
+      "Invoices sent through ANAF's e-Factura, with supplier invoices collected in the background",
+      'The mandatory ledgers, always up to date, and the figures for the D212, D390 and D301 returns, with their due dates',
+      'Help on every screen that explains the tax rule and cites the article of law',
+      '1,200+ unit tests and Playwright end-to-end tests; live since October 2026, and I keep my own books in it',
+    ],
+    stack: ['TypeScript', 'TanStack Start', 'React', 'tRPC', 'Drizzle', 'PostgreSQL', 'Bun', 'Docker', 'Caddy'],
+  },
+  {
+    name: 'LeasingSH.ro',
+    url: 'https://www.leasingsh.ro/',
+    role: 'Technical partner & fractional CTO · since 2013',
+    image: leasingsh,
+    alt: 'The LeasingSH.ro home page: a car search box above the latest offers',
+    intro:
+      "Romania's first online marketplace for new and used cars in leasing or for cash, live since 2010. I took over the technical side in 2013 as a sweat-equity partner and have owned it end to end since. I've rebuilt it three times as the web evolved, keeping the business running through each migration.",
+    points: [
+      '30,000+ cars from 750+ dealers across Romania and Germany, updated daily',
+      'Data ingestion from the main Romanian listing sites, a dealer API and an assisted importer, with LLM-based enrichment and cleanup',
+      'Lead tracking across calls, WhatsApp and messages; an admin console and editorial CMS for dealers and partners',
+      'A public API with MCP and OpenAPI descriptors, so AI assistants can search the offers directly',
+    ],
+    stack: ['TypeScript', 'Next.js', 'React', 'tRPC', 'Mantine', 'Drizzle', 'PostgreSQL', 'Docker', 'Caddy'],
+  },
+];
+---
+
+<section class="section" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Products I build and run</p>
+      <h2 id="work-title">I ship, then I keep shipping</h2>
+      <p>Two products I own the technical side of, from the first commit to the daily operations.</p>
+    </div>
+    <div class="products">
+      {
+        PRODUCTS.map((product) => (
+          <article class="card product">
+            <a class="shot img-link" href={product.url} tabindex="-1" aria-hidden="true">
+              <Image src={product.image} alt={product.alt} data-fade widths={[480, 800, 1100]} sizes="(max-width: 56rem) 100vw, 34rem" />
+            </a>
+            <div class="body">
+              <p class="role">{product.role}</p>
+              <h3>
+                <a href={product.url}>
+                  <span class="underline-grow">{product.name}</span>
+                  <Icon name="arrow" />
+                </a>
+              </h3>
+              <p class="intro">{product.intro}</p>
+              <ul class="points">
+                {product.points.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+              <ul class="chips" aria-label="Tech stack">
+                {product.stack.map((tech) => (
+                  <li>{tech}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .products {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .product {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    overflow: hidden;
+  }
+  .product:nth-child(even) .shot {
+    order: 1;
+  }
+  .shot {
+    display: flex;
+    align-items: center;
+    background: var(--shot-bg);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+  .shot :global(img) {
+    width: 100%;
+    max-height: 28rem;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 0.75rem;
+    box-shadow: 0 1rem 2.5rem -1rem rgb(0 0 0 / 0.35);
+  }
+  .body {
+    padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  }
+  .role {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  h3 {
+    margin-top: 0.375rem;
+    font-size: clamp(1.625rem, 3vw, 2rem);
+  }
+  /* Titles hover like the header menu: the accent underline grows under the name (.underline-grow, global.css),
+     and the arrow brightens */
+  h3 a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    text-decoration: none;
+  }
+  h3 :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--muted);
+    transition: color 0.15s ease;
+  }
+  h3 a:hover :global(svg) {
+    color: var(--text);
+  }
+  .intro {
+    margin-top: 1rem;
+  }
+  .points {
+    margin: 1.25rem 0;
+    padding-left: 1.25rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .points li + li {
+    margin-top: 0.375rem;
+  }
+  .points li::marker {
+    color: var(--accent-line);
+  }
+
+  @media (max-width: 56rem) {
+    .product {
+      grid-template-columns: 1fr;
+    }
+    .product:nth-child(even) .shot {
+      order: 0;
+    }
+    .shot :global(img) {
+      max-height: 20rem;
+    }
+  }
+</style>
