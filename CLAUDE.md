@@ -36,6 +36,7 @@ Private context (content decisions, research notes, open items) lives in `CLAUDE
 - **Image fade-in:** `img[data-fade]` (CSS in `global.css`, script in `Base.astro`). `.img-link` adds a hover zoom; its transition repeats the fade's, which it would otherwise replace.
 - **Counters:** `Count.astro`. The real value stays in the HTML (for search engines and screen readers); an `aria-hidden` ticker shows the animation, zero-padded by `tick()` in `src/lib/format.ts` so the width never changes.
 - **Mark size:** `Mark.astro` reads an optional `--mark-size` from a parent (the header uses it on large screens).
+- **`llms.txt`:** `src/pages/llms.txt.ts` restates the page's copy as Markdown, in the third person, with the same live figures. Update it when the copy in `src/components/` changes. No email address in it.
 - **External links:** `src/middleware.ts` adds `target="_blank" rel="noopener"` at build time; don't add them by hand.
 - **Header name:** the full name, or `NAME_SHORT` below 384px (a size smaller below 337px); the link's `aria-label` always has the full name. The breakpoints are measured, so re-measure after changing anything in the header row.
 - **Mobile menu:** `MobileMenu.astro`, below 62rem. A native `popover` (`#menu`) under the header: the glass link panel as an inset card, over a scrim (a hide-action button) that dims the whole area. The toggle's three bars fold into an X in CSS. It works without JS; a script only closes it when a link is picked or on a swipe up. Page scroll locks while it's open, and `html` keeps `scrollbar-gutter: stable` so the lock shifts nothing. Its top offset assumes the 4rem header height below 62rem.
@@ -52,9 +53,10 @@ Private context (content decisions, research notes, open items) lives in `CLAUDE
 
 ## Verifying a change
 
-1. `bun run check` and `bun run build`.
-2. For visuals, `bun run preview --port 4330` (Ionuț's own `astro dev` usually holds 4321; dev mode flashes unstyled content by design, so judge that on the preview).
-3. Playwright screenshots in light and dark, at desktop (1360px) and phone (390px) widths; check for console errors and horizontal overflow. Scroll images into view before judging them (they're lazy-loaded).
-4. Stop the preview by PID: `ps -eo pid,args | awk '/astro.mjs preview --port 4330/ && !/awk/ {print $1}' | xargs -r kill`. A `pkill -f` pattern that also matches your own command line kills your shell.
+1. If the change touches what the page says (copy, services, products, projects, timeline, stack, links), update `src/pages/llms.txt.ts` to match, and read `dist/llms.txt` after building.
+2. `bun run check` and `bun run build`.
+3. For visuals, `bun run preview --port 4330` (Ionuț's own `astro dev` usually holds 4321; dev mode flashes unstyled content by design, so judge that on the preview).
+4. Playwright screenshots in light and dark, at desktop (1360px) and phone (390px) widths; check for console errors and horizontal overflow. Scroll images into view before judging them (they're lazy-loaded).
+5. Stop the preview by PID: `ps -eo pid,args | awk '/astro.mjs preview --port 4330/ && !/awk/ {print $1}' | xargs -r kill`. A `pkill -f` pattern that also matches your own command line kills your shell.
 
 The shell is zsh: quote globs like `'--include=*.astro'`, and write `${var}:path` rather than `$var:path` (`:a` and friends are modifiers).
