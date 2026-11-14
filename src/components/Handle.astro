@@ -1,5 +1,6 @@
 ---
 import { HANDLE, PROFILES } from '../data/site';
+import Icon from './Icon.astro';
 
 // The profiles where my handle is the username, named in the line that says so
 const HANDLE_PROFILES = ['GitHub', 'npm', 'Codeberg', 'LinkedIn', 'Bluesky', 'DEV'].map(
@@ -23,9 +24,10 @@ const askUrl = `https://chatgpt.com/?q=${encodeURIComponent(PROMPT)}`;
         Even the LLMs know my handle; I’d like to think it’s the quality of the code, but it’s more likely that I’ve
         been leaving it lying about the internet since 1998.
       </p>
-      <p>
-        Ask <a href={askUrl}>ChatGPT</a> about me.
-      </p>
+      <aside class="ask">
+        <Icon name="sparkles" />
+        <p>Ask <a href={askUrl}>ChatGPT</a> about me.</p>
+      </aside>
       <p class="where">
         Or find me on{' '}
         {
@@ -54,7 +56,29 @@ const askUrl = `https://chatgpt.com/?q=${encodeURIComponent(PROMPT)}`;
   .section-head {
     margin-bottom: 0;
   }
+  /* A dashed card like the sponsors' thank-you note in Open Source */
+  .ask {
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    margin-top: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 2px dashed var(--dash);
+    border-radius: var(--radius);
+  }
+  .ask p {
+    margin-top: 0;
+    color: var(--text);
+  }
+  .ask :global(svg) {
+    flex: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-top: 0.15rem;
+    color: var(--link-hover);
+  }
   .section-head .where {
+    margin-top: 1.5rem;
     font-size: 1rem;
   }
 </style>
