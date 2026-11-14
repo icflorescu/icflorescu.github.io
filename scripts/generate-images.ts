@@ -93,34 +93,35 @@ const entries = images.map((image, i) => {
 });
 writeFileSync(path('public/favicon.ico'), Buffer.concat([header, ...entries, ...images]));
 
-// 4. Social image, 1200×630
+// 4. Social image, 1200×630, in the site's dark theme (the light-dark() tokens' dark values in global.css)
+const darkMark = dataUri(read('src/assets/mark/icf-dark.svg'));
 const avatar = Buffer.from(
   await (await fetch('https://avatars.githubusercontent.com/u/581999?v=4&s=460')).arrayBuffer()
 ).toString('base64');
 
 const og = await render(
-  `<div style="box-sizing:border-box;width:1200px;height:630px;padding:72px 80px;background:#faf8f3;color:#3a3935;
+  `<div style="box-sizing:border-box;width:1200px;height:630px;padding:72px 80px;background:#121211;color:#c9c7bf;
       display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center;font-family:Body">
     <div style="display:flex;flex-direction:column;height:100%">
-      <img src="${mark}" style="width:112px;height:112px;margin:-8px 0 0 -6px">
+      <img src="${darkMark}" style="width:112px;height:112px;margin:-8px 0 0 -6px">
       <div style="font-family:Display;font-weight:700;font-size:68px;line-height:1.05;letter-spacing:-0.03em;margin-top:40px">
         Ionuț-Cristian Florescu
       </div>
-      <div style="font-family:Display;font-weight:500;font-size:36px;line-height:1.25;letter-spacing:-0.015em;margin-top:20px;color:#3a3935">
-        Hands-on <span style="background:linear-gradient(transparent 58%, #ffe52e 58%, #ffe52e 92%, transparent 92%)">fractional CTO</span>,
+      <div style="font-family:Display;font-weight:500;font-size:36px;line-height:1.25;letter-spacing:-0.015em;margin-top:20px;color:#c9c7bf">
+        Hands-on <span style="background:linear-gradient(transparent 58%, #5d531b 58%, #5d531b 92%, transparent 92%)">fractional CTO</span>,
         product builder and open-source author
       </div>
-      <div style="margin-top:auto;font-size:24px;color:#5b5a55;display:flex;gap:16px">
-        <span style="font-weight:600;color:#3a3935">icflorescu.github.io</span><span>·</span><span>Creator of Mantine DataTable</span>
+      <div style="margin-top:auto;font-size:24px;color:#8d8b84;display:flex;gap:16px">
+        <span style="font-weight:600;color:#c9c7bf">icflorescu.github.io</span><span>·</span><span>Creator of Mantine DataTable</span>
       </div>
     </div>
     <div style="position:relative;width:330px;height:330px;margin:14px 14px 0 0">
-      <div style="position:absolute;inset:-18px 18px 18px -18px;border:4px dashed #87847a;border-radius:28px"></div>
-      <!-- As on the site: photo and backing lifted 0.25rem (5px at this size) above the frame, and a 20% wash
-           of the page color over the photo -->
-      <div style="position:absolute;inset:0;background:#ffe52e;border-radius:22px;transform:translateY(-5px) rotate(2.5deg)"></div>
+      <div style="position:absolute;inset:-18px 18px 18px -18px;border:4px dashed #8b8a83;border-radius:28px"></div>
+      <!-- As on the site in dark mode: photo and backing lifted 0.25rem (5px at this size) above the frame, and a
+           border drawn inside the photo's edge to set it off the page -->
+      <div style="position:absolute;inset:0;background:#5d531b;border-radius:22px;transform:translateY(-5px) rotate(2.5deg)"></div>
       <img src="data:image/jpeg;base64,${avatar}" style="position:absolute;inset:0;width:330px;height:330px;border-radius:22px;transform:translateY(-5px) rotate(2.5deg) translate(-10px,-10px)">
-      <div style="position:absolute;inset:0;border-radius:22px;background:rgb(250 248 243 / 0.2);transform:translateY(-5px) rotate(2.5deg) translate(-10px,-10px)"></div>
+      <div style="position:absolute;inset:0;border-radius:22px;box-sizing:border-box;border:3px solid #45443e;transform:translateY(-5px) rotate(2.5deg) translate(-10px,-10px)"></div>
     </div>
   </div>`,
   1200,
