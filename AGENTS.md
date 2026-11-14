@@ -1,5 +1,7 @@
 # icflorescu.github.io
 
+Instructions for coding agents working on this repository (Claude Code loads them through `CLAUDE.md`).
+
 The personal website of Ionuț-Cristian Florescu (GitHub: `icflorescu`): a single static page at https://icflorescu.github.io/ that advertises his services and also fixes how search engines show the whole `icflorescu.github.io` host (favicon, site name, `robots.txt`). See `README.md` for what the site says and how it's built and deployed.
 
 Private context (content decisions, research notes, open items) lives in `CLAUDE.local.md`, which isn't committed. Read it if it's there.

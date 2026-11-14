@@ -19,5 +19,5 @@ out/
 # research notes and raw data exports: private, not for a public repo
 research/
 
-# private notes for Claude Code (CLAUDE.md itself is meant to be committed)
+# private notes for coding agents (AGENTS.md and CLAUDE.md are meant to be committed)
 CLAUDE.local.md
