@@ -182,6 +182,10 @@ a {
     transform: scaleX(1);
   }
 }
+/* The section in view (scroll-spy in Header.astro): gold text, kept on hover; the underline stays a hover cue */
+.nav-link[aria-current] {
+  color: var(--link-hover);
+}
 @media (prefers-reduced-motion: reduce) {
   .nav-link::after,
   .underline-grow::after {

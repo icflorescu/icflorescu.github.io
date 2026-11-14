@@ -47,6 +47,29 @@ const NAV = [
 </header>
 
 <script>
+  // Scroll-spy: the menu entry (header and mobile menu) of the section whose top has passed 35% of the
+  // viewport is marked as the current location. Above Services (the hero) and from Contact on, none is.
+  const spyLinks = [...document.querySelectorAll<HTMLAnchorElement>('.header a.nav-link[href^="#"]')];
+  const spySections = [...document.querySelectorAll<HTMLElement>('main > section[id]')];
+  let spyQueued = false;
+  const spy = () => {
+    spyQueued = false;
+    const line = innerHeight * 0.35;
+    const current = spySections.findLast((section) => section.getBoundingClientRect().top <= line);
+    for (const link of spyLinks) {
+      if (current && link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+  };
+  const queueSpy = () => {
+    if (spyQueued) return;
+    spyQueued = true;
+    requestAnimationFrame(spy);
+  };
+  addEventListener('scroll', queueSpy, { passive: true });
+  addEventListener('resize', queueSpy, { passive: true });
+  spy();
+
   const root = document.documentElement;
   const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle')!;
   const media = matchMedia('(prefers-color-scheme: dark)');
