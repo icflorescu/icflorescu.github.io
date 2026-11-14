@@ -86,6 +86,14 @@ const PRINCIPLES = [
     .offers {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    /* Share rows across the cards, so the bodies start level even when only some titles wrap */
+    .offers li {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+      align-content: start;
+    }
   }
   .offers li {
     padding: 1.75rem;
