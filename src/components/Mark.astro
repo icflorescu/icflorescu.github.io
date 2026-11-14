@@ -4,18 +4,21 @@
 // active color scheme. (Inlining them would add ~19 kB of SVG paths to the HTML per copy.)
 import dark from '../assets/mark/icf-dark.svg';
 import light from '../assets/mark/icf-light.svg';
+import { NAME } from '../data/site';
 
 interface Props {
   size?: number;
   class?: string;
 }
 const { size = 40, class: className } = Astro.props;
+// Search engines (Bing) flag an empty alt; only the copy matching the color scheme is displayed, so it's read once
+const alt = `${NAME}’s icf mark`;
 ---
 
 <!-- A parent can resize it with --mark-size (e.g. the header on large screens); `size` is the default -->
 <span class:list={['mark', className]} style={`--mark-default:${size}px`}>
-  <img class="mark-light" src={light.src} width={size} height={size} alt="" />
-  <img class="mark-dark" src={dark.src} width={size} height={size} alt="" />
+  <img class="mark-light" src={light.src} width={size} height={size} {alt} />
+  <img class="mark-dark" src={dark.src} width={size} height={size} {alt} />
 </span>
 
 <style>
