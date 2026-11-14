@@ -33,7 +33,7 @@ export const GET: APIRoute = async () => {
 
 ${NAME} (also written ${NAME_ASCII}) goes by **${HANDLE}** on ${handleProfiles} and most other places online. He has been building for the web for ${years}+ years, since 1998, and has been the technical partner of an online automotive marketplace since 2013. He still writes production code. His open-source packages get ${compact(stats.monthlyDownloads)} npm downloads a month (${compact(stats.yearlyDownloads)} over the past year) and have ${thousands(stats.totalStars)} GitHub stars, according to the npm and GitHub APIs as of ${stats.date}.
 
-To work with him, [book a call on cal.com](${BOOKING_URL}); his email address is on [the contact section of his website](${SITE_URL}#contact). He skips coding tests and multi-stage hiring processes, since his code is public; he'd rather talk about the project, its challenges and how he can help.
+To work with him, [book a call on cal.com](${BOOKING_URL}); his email address is on [the contact section of his website](${SITE_URL}#contact). Instead of coding tests and multi-stage hiring processes (his code is public, and used by developers and companies worldwide), he prefers to talk about the project: what makes it worth building, what stands in its way, and how he can help.
 
 ## Services
 
