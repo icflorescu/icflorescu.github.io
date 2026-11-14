@@ -140,7 +140,8 @@ const FACTS = [
     inset: 0;
     background: var(--highlight);
     border-radius: 1rem;
-    transform: translateY(calc(-1 * var(--lift))) rotate(2.5deg);
+    /* translate(0, 0) only mirrors the photo's transform, for the load animation below */
+    transform: translateY(calc(-1 * var(--lift))) rotate(2.5deg) translate(0, 0);
     z-index: -1;
   }
   /* Dark while the photo loads; the photo fades in over it (data-fade, global.css) */
@@ -151,6 +152,21 @@ const FACTS = [
     border-radius: 1rem;
     background: #1a1a18;
     transform: translateY(calc(-1 * var(--lift))) rotate(2.5deg) translate(-0.5rem, -0.5rem);
+  }
+  /* While the photo loads, it sits straight, with its backing right underneath; as it fades in (data-loaded,
+     Base.astro), it turns to its angle and the backing slides out, down and to the right. Both transforms keep
+     the same functions in the same order, so they interpolate step by step. Only with JS and motion allowed. */
+  @media (prefers-reduced-motion: no-preference) {
+    .portrait::after,
+    .photo {
+      transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    :global(:root.js) .portrait:not(:has(img[data-loaded]))::after {
+      transform: translateY(calc(-1 * var(--lift))) rotate(0deg) translate(-0.5rem, -0.5rem);
+    }
+    :global(:root.js) .portrait:not(:has(img[data-loaded])) .photo {
+      transform: translateY(calc(-1 * var(--lift))) rotate(0deg) translate(-0.5rem, -0.5rem);
+    }
   }
   /* Light mode: a wash of the page color lifts the dark photo (the same as showing it at 80% opacity on
      the page, as on swapp.ro). Dark mode: a border sets it off the page, drawn inside its edge. */
