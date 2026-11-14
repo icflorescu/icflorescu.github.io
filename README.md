@@ -20,9 +20,10 @@ I've been building for the web since 1998: insurance platforms, marketplaces, ta
 
 - invoices sent through ANAF's e-Factura, with supplier invoices collected in the background;
 - the mandatory ledgers, always up to date, and the figures for the D212, D390 and D301 returns, with their due dates;
-- help on every screen that explains the tax rule and cites the article of law.
+- help on every screen that explains the tax rule and cites the article of law;
+- accounting, not just invoicing, at a truly affordable price: a fraction of what comparable apps charge.
 
-I built it in 2021 for my own books and rebuilt it from scratch in 2026, solo, in five months: product, design, code and operations. It's been live since October 2026, and I keep my own books in it.
+I built it in 2021 for my own books, then rebuilt it from scratch in 2026 so other freelancers can use it too. Solo, in five months: product, design, code and operations. It's been live since October 2026, and I trust it with my own books.
 
 ## Get in touch
 
