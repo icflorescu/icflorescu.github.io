@@ -1,8 +1,9 @@
 // Generates the favicon set and the social image in public/, from the mark in src/assets/mark/.
 // Run it after changing the mark or the social image design, and commit the output:
 //   bun run generate-images
-// (needs Playwright's Chromium: `bunx playwright install chromium` once)
+// (needs Playwright's Chromium, `bunx playwright install chromium` once, and optipng on the PATH)
 
+import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { chromium } from 'playwright';
 
@@ -131,4 +132,11 @@ const og = await render(
 writeFileSync(path('public/og.png'), og);
 
 await browser.close();
+
+// Lossless PNG optimization (needs optipng on the PATH)
+const pngs = ['apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'og.png'].map(
+  (file) => path(`public/${file}`).pathname
+);
+const optipng = spawnSync('optipng', ['-quiet', '-o7', '-strip', 'all', ...pngs], { encoding: 'utf8' });
+if (optipng.status !== 0) throw new Error(`optipng failed: ${optipng.error ?? optipng.stderr}`);
 process.stdout.write('Generated public/icon.svg, favicon.ico, apple-touch-icon.png, icon-*.png and og.png\n');
