@@ -123,16 +123,27 @@ const jsonLd = {
     <a class="skip-link" href="#main">Skip to content</a>
     <slot />
     <script>
-      // Fade in images marked data-fade (see global.css). Lazy ones load later and fade in as they arrive; ones
-      // already loaded (or failed) before this ran still fade, since they've been hidden from the first paint.
-      for (const image of document.querySelectorAll<HTMLImageElement>('img[data-fade]')) {
-        const show = () => requestAnimationFrame(() => image.setAttribute('data-loaded', ''));
-        if (image.complete) show();
-        else {
-          image.addEventListener('load', show, { once: true });
-          image.addEventListener('error', show, { once: true });
-        }
-      }
+      // Fade in images marked data-fade (see global.css) once they're both loaded and in view (a fifth of them
+      // on screen), so the fade is seen rather than spent off-screen: lazy images are often fetched well before
+      // they're scrolled to. Ones already loaded (or failed) before this ran still fade, since they've been
+      // hidden from the first paint.
+      const fadeIn = new IntersectionObserver(
+        (entries) => {
+          for (const { isIntersecting, target } of entries) {
+            if (!isIntersecting) continue;
+            fadeIn.unobserve(target);
+            const image = target as HTMLImageElement;
+            const show = () => requestAnimationFrame(() => image.setAttribute('data-loaded', ''));
+            if (image.complete) show();
+            else {
+              image.addEventListener('load', show, { once: true });
+              image.addEventListener('error', show, { once: true });
+            }
+          }
+        },
+        { threshold: 0.2 }
+      );
+      for (const image of document.querySelectorAll<HTMLImageElement>('img[data-fade]')) fadeIn.observe(image);
     </script>
   </body>
 </html>

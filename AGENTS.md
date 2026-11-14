@@ -35,7 +35,7 @@ Private context (content decisions, research notes, open items) lives in `CLAUDE
 
 - **Theme:** follows the system by default; an inline head script in `Base.astro` adds the `js` class, applies a saved choice and syncs `theme-color`. Colors use `light-dark()` tokens in `src/styles/global.css`. JS-only controls use `.js-only` / `.no-js`, so there's no flash of unstyled content.
 - **Fading hairlines** between header, sections and footer: the `--rule` gradient token, applied with `border-image`. It's declared on `:root` and on `.section + .section`, so each picks up its own `--rule-fade`.
-- **Image fade-in:** `img[data-fade]` (CSS in `global.css`, script in `Base.astro`). `.img-link` adds a hover zoom; its transition repeats the fade's, which it would otherwise replace.
+- **Image fade-in:** `img[data-fade]` (CSS in `global.css`, script in `Base.astro`) fades in once loaded *and* a fifth of it is in view (an `IntersectionObserver` sets `data-loaded`). The hero portrait's turn-and-slide keys off the same `data-loaded`. `.img-link` adds a hover zoom; its transition repeats the fade's, which it would otherwise replace.
 - **Counters:** `Count.astro`. The real value stays in the HTML (for search engines and screen readers); an `aria-hidden` ticker shows the animation, zero-padded by `tick()` in `src/lib/format.ts` so the width never changes.
 - **Mark size:** `Mark.astro` reads an optional `--mark-size` from a parent (the header uses it on large screens).
 - **`llms.txt`:** `src/pages/llms.txt.ts` restates the page's copy as Markdown, in the third person, with the same live figures. Update it when the copy in `src/components/` changes. No email address in it.
