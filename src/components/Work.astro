@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import ajm from '../assets/screens/ajm-fleetpurchase.png';
 import leasingsh from '../assets/screens/leasingsh.png';
 import swapp from '../assets/screens/swapp-dashboard.png';
 import Icon from './Icon.astro';
@@ -49,15 +50,42 @@ const PRODUCTS: Product[] = [
     ],
     stack: ['TypeScript', 'Next.js', 'React', 'tRPC', 'Mantine', 'Drizzle', 'PostgreSQL', 'Docker', 'Caddy'],
   },
+  {
+    name: 'AJM Fleet Purchase',
+    url: 'https://ajm-fleetpurchase.com/',
+    role: 'Client back office · contract, 2020–2023',
+    image: ajm,
+    alt: 'The AJM Fleet Purchase website: the company logo over a dark close-up of a car',
+    intro:
+      'The back office of a B2B fleet-trading enterprise that buys new and used cars in bulk across Europe, for fleet operators in Europe, Asia, the Middle East and Africa. I built it from a blank repo and ran it in production; it covers the whole trade, from the purchase of each car to the last payment.',
+    points: [
+      'Every vehicle followed from supplier to buyer: VIN, estimated and actual prices, fees and delivery dates',
+      'Proforma and final invoices for several group companies, in several currencies, generated as PDFs and sent from the app',
+      'Incoming and outgoing bank payments matched to vehicles and invoices, with a per-vehicle balance sheet exported to Excel',
+      "A dashboard of deliveries due, invoices overdue and records that don't add up; 1,100+ commits, all mine, all pre-AI",
+    ],
+    stack: [
+      'TypeScript',
+      'Next.js',
+      'React',
+      'Blueprint',
+      'GraphQL',
+      'Hasura',
+      'PostgreSQL',
+      'Docker',
+      'Caddy',
+      'AWS Lightsail',
+    ],
+  },
 ];
 ---
 
 <section class="section" id="work" aria-labelledby="work-title">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Products I build and run</p>
-      <h2 id="work-title">I ship, then I keep shipping</h2>
-      <p>Two products I own the technical side of, from the first commit to the daily operations.</p>
+      <p class="eyebrow">Products I've built and run</p>
+      <h2 id="work-title">Built, shipped and kept running</h2>
+      <p>Products I've taken from the first commit to production, then stayed on to run.</p>
     </div>
     <div class="products">
       {
