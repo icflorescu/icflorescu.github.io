@@ -74,10 +74,14 @@ const QUOTES = [
       <ul class="chips">
         {STACK.map((item) => <li>{item}</li>)}
       </ul>
-      <p>
-        Before that: PHP and MySQL around Y2K, Java/J2EE, .NET/C#, Oracle and SQL Server in the 2000s, CoffeeScript back
-        when JavaScript had no async/await, and more templating languages and frameworks than I care to remember.
-      </p>
+      <p>Before that:</p>
+      <ul class="before">
+        <li>PHP and MySQL around Y2K</li>
+        <li>Java/J2EE, .NET/C#, Oracle and SQL Server in the 2000s</li>
+        <li>CoffeeScript &amp; IcedCoffeeScript, back when JavaScript had no async/await</li>
+        <li>Front-end libraries of their day, such as jQuery, Backbone.js and Riot.js</li>
+        <li>More templating languages and frameworks than I care to remember</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -136,6 +140,20 @@ const QUOTES = [
     margin-top: 1.25rem;
     font-size: 0.9375rem;
     color: var(--muted);
+  }
+  /* Bulleted like the product highlights in Work */
+  .before {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+    list-style: disc;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  .before li + li {
+    margin-top: 0.125rem;
+  }
+  .before li::marker {
+    color: var(--accent-line);
   }
 
   @media (max-width: 52rem) {
