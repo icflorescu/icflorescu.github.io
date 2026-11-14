@@ -1,14 +1,4 @@
 ---
-import { HANDLE, PROFILES } from '../data/site';
-
-// The profiles where my handle is the username, named in the line that says so
-const HANDLE_PROFILES = ['GitHub', 'npm', 'LinkedIn', 'Bluesky', 'DEV'].map(
-  (name) => PROFILES.find((profile) => profile.name === name)!
-);
-
-// Opens a new chat already asking about me (both apps read the question from ?q=; ChatGPT sends it at once)
-const askUrl = (base: string) => `${base}?q=${encodeURIComponent(`Who is ${HANDLE}?`)}`;
-
 const STACK = [
   'TypeScript',
   'React',
@@ -49,20 +39,6 @@ const QUOTES = [
         <p>
           I like open source, lazy mornings and honest conversations. I don’t like hypocrisy, xenophobia, willful
           ignorance, or people talking bullshit.
-        </p>
-        <p>
-          Most places online, I’m <strong>{HANDLE}</strong>:{' '}
-          {
-            HANDLE_PROFILES.map((profile, i) => (
-              <>
-                <a href={profile.url}>{profile.name}</a>
-                {i < HANDLE_PROFILES.length - 2 ? ', ' : i === HANDLE_PROFILES.length - 2 ? ' and ' : ''}
-              </>
-            ))
-          }
-          , to name a few. Unique enough that even the LLMs know who I am: ask <a href={askUrl('https://chatgpt.com/')}>ChatGPT</a> or <a
-            href={askUrl('https://claude.ai/new')}>Claude</a
-          >.
         </p>
       </div>
       <ul class="quotes">
