@@ -13,9 +13,10 @@ interface Props {
 const { to, from = 0, format = 'plain' } = Astro.props;
 ---
 
-<span class="count" data-count-from={from} data-count-to={to} data-count-format={format}
-  ><span class="value">{FORMATS[format](to)}</span><span class="ticker" aria-hidden="true"></span></span
->
+<span class="count" data-count-from={from} data-count-to={to} data-count-format={format}>
+  <span class="value">{FORMATS[format](to)}</span>
+  <span class="ticker" aria-hidden="true"></span>
+</span>
 
 <style>
   .count {
