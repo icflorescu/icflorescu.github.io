@@ -205,15 +205,44 @@ const NAV = [
     font-size: 0.9375rem;
   }
 
-  /* The menu button (MobileMenu.astro), pulled out by its inner padding so the glyph lines up with the page
-     edge, and its gap to the mark matches the mark's gap to the name */
-  .inner > :global(.menu-toggle) {
-    margin-inline: -0.5rem -0.875rem;
-  }
-
+  /* Below 62rem: the menu button on the left, the actions on the right and the brand centered between them.
+     Both ends are pulled out by their inner padding, so the glyphs line up with the page edges and the
+     brand centers on what you see, not on the button boxes. */
   @media (max-width: 62rem) {
     nav {
       display: none;
+    }
+    .inner > :global(.menu-toggle) {
+      margin-inline: -0.5625rem;
+    }
+    .brand {
+      margin-inline: auto;
+    }
+    /* Larger icons for touch; the pull-out is the theme toggle's inner padding around its 1.25rem icon */
+    .actions {
+      margin-left: -0.5rem;
+    }
+    .theme-toggle :global(svg),
+    .book :global(svg) {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    /* No fill here, it weighs too much next to the centered brand: a plain icon (and label) colored like the
+       theme toggle, brightening on hover */
+    .book {
+      margin-right: calc(-0.625rem - 2px);
+      padding-inline: 0.625rem;
+      background: transparent;
+      color: var(--muted);
+      transition:
+        border-color 0.15s ease,
+        color 0.15s ease;
+    }
+  }
+  @media (max-width: 62rem) and (hover: hover) {
+    .book:hover {
+      border-color: var(--dash);
+      color: var(--text);
     }
   }
   /* Taller where the full menu shows (global.css raises scroll-padding-top to match) */
@@ -233,9 +262,6 @@ const NAV = [
     }
     .book span {
       display: none;
-    }
-    .book {
-      padding-inline: 0.625rem;
     }
     /* With the menu button taking room on the left, the name needs it more than this gap does */
     .actions {
@@ -261,9 +287,6 @@ const NAV = [
     }
     .inner {
       gap: 0.75rem;
-    }
-    .inner > :global(.menu-toggle) {
-      margin-right: -0.625rem;
     }
   }
 </style>
