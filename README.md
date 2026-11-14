@@ -7,7 +7,7 @@ This is the source of [my personal website](https://icflorescu.github.io/). I'm 
 ## What I offer
 
 - **Fractional CTO & technical partner.** For early-stage products that need a senior person to own the technical side: architecture, code, infrastructure, data and day-to-day operations. I treat software as a business asset, not a ticket queue.
-- **Sweat-equity partnerships.** If the business side is covered and you need a technical co-owner, I'm open to trading equity for work, with me owning the technical side end to end. It's how I've worked with [LeasingSH.ro](https://www.leasingsh.ro/), an online automotive marketplace, since 2013.
+- **Profit-share or equity partnerships.** If the business side is covered, I'll own the technical side for a share of the profits instead of a fee, as I have with [LeasingSH.ro](https://www.leasingsh.ro/), an online automotive marketplace, since 2013. Equity works too, but profit is what's real.
 - **Selected hands-on work.** TypeScript, React, TanStack Start / Next.js, Node.js / Bun and PostgreSQL. Data-rich interfaces are home turf: I wrote [Mantine DataTable](https://icflorescu.github.io/mantine-datatable/), used by teams at Microsoft and Namecheap.
 
 I've been building for the web since 1998: insurance platforms, marketplaces, tax software and a fair amount of open source, including [Mantine ContextMenu](https://icflorescu.github.io/mantine-contextmenu/) and [tRPC-SvelteKit](https://icflorescu.github.io/trpc-sveltekit/).
