@@ -32,29 +32,29 @@ export type Stats = {
   monthly: Record<string, number>;
 };
 
-// Taken on 2026-11-13, see research/profile.md.
+// Taken on 2026-11-18 from the GitHub and npm APIs.
 const SNAPSHOT: Stats = {
-  date: '2026-11-13',
+  date: '2026-11-18',
   live: false,
-  totalStars: 4067,
-  monthlyDownloads: 942_911,
-  yearlyDownloads: 6_233_608,
+  totalStars: 4066,
+  monthlyDownloads: 1_047_616,
+  yearlyDownloads: 6_385_951,
   stars: {
-    'mantine-datatable': 1263,
-    'trpc-sveltekit': 835,
+    'mantine-datatable': 1262,
+    'trpc-sveltekit': 834,
     'iisexpress-proxy': 746,
     'mantine-contextmenu': 176,
-    'pocketbase-uml.github.io': 160,
+    'pocketbase-uml.github.io': 161,
     'expose-wsl': 143,
     'next-server-actions-parallel': 57,
   },
   monthly: {
-    'mantine-datatable': 727_876,
-    'mantine-contextmenu': 91_683,
-    'trpc-sveltekit': 91_837,
-    'pocketbase-uml': 690,
-    'next-server-actions-parallel': 3338,
-    'iisexpress-proxy': 4960,
+    'mantine-datatable': 813_074,
+    'mantine-contextmenu': 102_871,
+    'trpc-sveltekit': 97_825,
+    'pocketbase-uml': 764,
+    'next-server-actions-parallel': 3817,
+    'iisexpress-proxy': 6112,
   },
 };
 

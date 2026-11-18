@@ -3,18 +3,27 @@
 // search engines (which index the page after running its JS) and screen readers only ever get the true number.
 // While counting, it's only visually hidden, and an aria-hidden copy shows the running digits.
 // Without JS, or with reduced motion, the value simply shows.
-import { FORMATS, type Format } from '../lib/format';
+import { compact, FORMATS, type Format, milestone as milestoneOf } from '../lib/format';
 
 interface Props {
   to: number;
   from?: number;
   format?: Format;
+  /** Once past a round number, show it as "Over 1M" / "Over 4k": the counter stops just short, then it flashes */
+  milestone?: boolean;
 }
-const { to, from = 0, format = 'plain' } = Astro.props;
+const { to, from = 0, format = 'plain', milestone = false } = Astro.props;
+const reached = milestone ? milestoneOf(format, to) : undefined;
 ---
 
-<span class="count" data-count-from={from} data-count-to={to} data-count-format={format}>
-  <span class="value">{FORMATS[format](to)}</span>
+<span
+  class="count"
+  data-count-from={from}
+  data-count-to={reached === undefined ? to : reached - 1}
+  data-count-format={format}
+  data-count-milestone={reached}
+>
+  <span class="value">{reached === undefined ? FORMATS[format](to) : `Over ${compact(reached)}`}</span>
   <span class="ticker" aria-hidden="true"></span>
 </span>
 
@@ -39,6 +48,24 @@ const { to, from = 0, format = 'plain' } = Astro.props;
   .count:not([data-counting]) .ticker {
     display: none;
   }
+  /* A milestone ("Over 1M") lights up in gold as it replaces the counter, then settles back */
+  .count[data-flash] .value {
+    display: inline-block;
+    transform-origin: left 70%;
+    animation: flash 1.2s ease-out;
+  }
+  @keyframes flash {
+    0%,
+    30% {
+      color: var(--link-hover);
+      transform: scale(1.08);
+      text-shadow: 0 0 0.6em var(--yellow);
+    }
+    100% {
+      transform: none;
+      text-shadow: 0 0 0 transparent;
+    }
+  }
 </style>
 
 <script>
@@ -49,13 +76,34 @@ const { to, from = 0, format = 'plain' } = Astro.props;
   const counts = [...document.querySelectorAll<HTMLElement>('.count')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Each run gets a new id, so resetting a counter mid-run stops the old animation
+  const runs = new WeakMap<HTMLElement, number>();
+  const armed = new WeakSet<HTMLElement>();
+
+  // Back to the start value, ready to count again (also drops the milestone flash, so it can replay)
+  const arm = (count: HTMLElement) => {
+    runs.set(count, (runs.get(count) ?? 0) + 1);
+    count.querySelector<HTMLElement>('.ticker')!.textContent = tick(
+      count.dataset.countFormat as Format,
+      Number(count.dataset.countFrom),
+      Number(count.dataset.countTo),
+    );
+    count.removeAttribute('data-flash');
+    count.setAttribute('data-counting', '');
+    armed.add(count);
+  };
+
   const run = (count: HTMLElement) => {
+    armed.delete(count);
+    const id = (runs.get(count) ?? 0) + 1;
+    runs.set(count, id);
     const ticker = count.querySelector<HTMLElement>('.ticker')!;
     const from = Number(count.dataset.countFrom);
     const to = Number(count.dataset.countTo);
     const format = count.dataset.countFormat as Format;
     const start = performance.now();
     const step = (now: number) => {
+      if (runs.get(count) !== id) return;
       // rAF timestamps can predate `start` by a frame: clamp, or the first frame would undershoot `from`
       const t = Math.min(Math.max((now - start) / DURATION, 0), 1);
       ticker.textContent = tick(format, Math.round(from + (to - from) * easeOut(t)), to);
@@ -63,6 +111,7 @@ const { to, from = 0, format = 'plain' } = Astro.props;
       else {
         count.removeAttribute('data-counting');
         ticker.textContent = '';
+        if (count.dataset.countMilestone) count.setAttribute('data-flash', '');
       }
     };
     requestAnimationFrame(step);
@@ -70,26 +119,33 @@ const { to, from = 0, format = 'plain' } = Astro.props;
 
   if (reduced) for (const count of counts) count.setAttribute('data-count-ready', '');
   else {
-    const observer = new IntersectionObserver(
+    // A counter runs once it's mostly in view, if it's armed
+    const countObserver = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          observer.unobserve(entry.target);
-          run(entry.target as HTMLElement);
+          const count = entry.target as HTMLElement;
+          if (entry.isIntersecting && armed.has(count)) run(count);
         }
       },
       { threshold: 0.6 },
     );
+    // Once its section is entirely out of view, it's re-armed, so it counts again when the section comes back
+    const sections = new Map<Element, HTMLElement[]>();
     for (const count of counts) {
-      const format = count.dataset.countFormat as Format;
-      count.querySelector<HTMLElement>('.ticker')!.textContent = tick(
-        format,
-        Number(count.dataset.countFrom),
-        Number(count.dataset.countTo),
-      );
-      count.setAttribute('data-counting', '');
-      count.setAttribute('data-count-ready', '');
-      observer.observe(count);
+      const section = count.closest('section') ?? count;
+      sections.set(section, [...(sections.get(section) ?? []), count]);
     }
+    const sectionObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) continue;
+        for (const count of sections.get(entry.target) ?? []) if (!armed.has(count)) arm(count);
+      }
+    });
+    for (const count of counts) {
+      arm(count);
+      count.setAttribute('data-count-ready', '');
+      countObserver.observe(count);
+    }
+    for (const section of sections.keys()) sectionObserver.observe(section);
   }
 </script>

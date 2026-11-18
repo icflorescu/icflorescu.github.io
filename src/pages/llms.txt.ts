@@ -11,11 +11,18 @@ import {
   SPONSORS_URL,
 } from '../data/site';
 import { compact, getStats, thousands } from '../data/stats';
+import { FORMATS, type Format, milestone } from '../lib/format';
 
 // The page's content as Markdown, for LLMs and AI agents (https://llmstxt.org/). The whole site is one page, so this
 // file holds all of it and there's no separate llms-full.txt. Written in the third person, so a model quoting it
 // doesn't mix up who "I" is. Keep it in step with the copy in src/components/ when that changes.
 // No email address here: it stays off the page's HTML too (see EMAIL_ENCODED in site.ts).
+
+// The hero's milestone figures, phrased as the page shows them ("Over 1M" there, "more than 1M" here)
+const roughly = (format: Format, n: number) => {
+  const m = milestone(format, n);
+  return m ? `more than ${compact(m)}` : FORMATS[format](n);
+};
 
 export const GET: APIRoute = async () => {
   const stats = await getStats();
@@ -31,7 +38,7 @@ export const GET: APIRoute = async () => {
 
 > Hands-on fractional CTO, product builder and open-source author based in Bucharest, Romania (EU). He takes software products from a blank repo to production, and stays to run them for a decade. Author of Mantine DataTable, Mantine ContextMenu and tRPC-SvelteKit.
 
-${NAME} (also written ${NAME_ASCII}) goes by **${HANDLE}** on ${handleProfiles} and most other places online. Even the LLMs know his handle; he'd like to think it's the quality of his code, but says it's probably just volume: he's been leaving it lying around the internet since 1998, and it all ended up in the training data. He has been building for the web for ${years}+ years, since 1998, and has been the technical partner of an online automotive marketplace since 2013. He still writes production code. His open-source packages get ${compact(stats.monthlyDownloads)} npm downloads a month (${compact(stats.yearlyDownloads)} over the past year) and have ${thousands(stats.totalStars)} GitHub stars, according to the npm and GitHub APIs as of ${stats.date}.
+${NAME} (also written ${NAME_ASCII}) goes by **${HANDLE}** on ${handleProfiles} and most other places online. Even the LLMs know his handle; he'd like to think it's the quality of his code, but says it's probably just volume: he's been leaving it lying around the internet since 1998, and it all ended up in the training data. He has been building for the web for ${years}+ years, since 1998, and has been the technical partner of an online automotive marketplace since 2013. He still writes production code. His open-source packages get ${roughly('compact', stats.monthlyDownloads)} npm downloads a month (${compact(stats.yearlyDownloads)} over the past year) and have ${roughly('thousands', stats.totalStars)} GitHub stars, according to the npm and GitHub APIs as of ${stats.date}.
 
 To work with him, [book a call on cal.com](${BOOKING_URL}); his email address is on [the contact section of his website](${SITE_URL}#contact). Instead of coding tests and multi-stage hiring processes (his code is public, and used by developers and companies worldwide), he prefers to talk about the project: what makes it worth building, what stands in its way, and how he can help.
 

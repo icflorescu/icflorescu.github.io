@@ -31,3 +31,17 @@ export function tick(format: Format, n: number, to: number) {
   const padded = digits(n, to);
   return format === 'thousands' ? padded.replace(/\B(?=(\d{3})+$)/g, ',') : padded;
 }
+
+// Round-number steps for milestones, per format: whole millions for compact figures, whole thousands otherwise.
+const STEPS: Partial<Record<Format, number>> = { compact: 1_000_000, thousands: 1000 };
+
+/**
+ * The round number `n` has passed, rounded down to its format's step (1047616 → 1000000, 4066 → 4000), shown as
+ * "Over 1M", "Over 4k" (always in the compact form). Undefined when there's none, or when `n` is exactly on it (it isn't "over" then).
+ */
+export function milestone(format: Format, n: number) {
+  const step = STEPS[format];
+  if (!step) return undefined;
+  const m = Math.floor(n / step) * step;
+  return m >= step && n > m ? m : undefined;
+}
