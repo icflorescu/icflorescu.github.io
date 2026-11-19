@@ -1,18 +1,11 @@
 ---
 import { HANDLE, PROFILES } from '../data/site';
-import Icon from './Icon.astro';
+import AskChatGPT from './AskChatGPT.astro';
 
 // The profiles where my handle is the username, named in the line that says so
 const HANDLE_PROFILES = ['GitHub', 'npm', 'Codeberg', 'LinkedIn', 'Bluesky', 'DEV'].map(
   (name) => PROFILES.find((profile) => profile.name === name)!
 );
-
-// Opens a new ChatGPT chat that sends this prompt at once (it reads it from ?q=)
-const PROMPT = `Who is ${HANDLE}?
-
-How much would it cost to hire his services?
-Make an estimation based on his open-source and commercial work.`;
-const askUrl = `https://chatgpt.com/?q=${encodeURIComponent(PROMPT)}`;
 ---
 
 <section class="section" aria-labelledby="handle-title">
@@ -24,10 +17,7 @@ const askUrl = `https://chatgpt.com/?q=${encodeURIComponent(PROMPT)}`;
         Even the LLMs know my handle. I’d like to think it’s the quality of my code, but it’s probably just volume: I’ve
         been leaving it lying around the internet since 1998, and it all ended up in the training data.
       </p>
-      <aside class="ask">
-        <Icon name="sparkles" />
-        <p>Ask <a href={askUrl}>ChatGPT</a> about me.</p>
-      </aside>
+      <AskChatGPT prompt={`Who is ${HANDLE}?`}>about me.</AskChatGPT>
       <p class="where">
         Or find me on{' '}
         {
@@ -55,27 +45,6 @@ const askUrl = `https://chatgpt.com/?q=${encodeURIComponent(PROMPT)}`;
   }
   .section-head {
     margin-bottom: 0;
-  }
-  /* A dashed card like the sponsors' thank-you note in Open Source */
-  .ask {
-    display: flex;
-    gap: 0.875rem;
-    align-items: flex-start;
-    margin-top: 1.5rem;
-    padding: 1.25rem 1.5rem;
-    border: 2px dashed var(--dash);
-    border-radius: var(--radius);
-  }
-  .ask p {
-    margin-top: 0;
-    color: var(--text);
-  }
-  .ask :global(svg) {
-    flex: none;
-    width: 1.375rem;
-    height: 1.375rem;
-    margin-top: 0.15rem;
-    color: var(--link-hover);
   }
   .section-head .where {
     margin-top: 1.5rem;

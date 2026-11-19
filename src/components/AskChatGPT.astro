@@ -1,0 +1,47 @@
+---
+// A dashed card, like the sponsors' thank-you note in Open Source, with a link that opens a new ChatGPT chat and
+// sends the prompt at once (ChatGPT reads it from ?q=). The slot finishes the sentence "Ask ChatGPT …".
+import Icon from './Icon.astro';
+
+interface Props {
+  prompt: string;
+  class?: string;
+}
+const { prompt, class: className } = Astro.props;
+const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+---
+
+<aside class:list={['ask', className]}>
+  <Icon name="sparkles" />
+  <p>Ask <a href={url}>ChatGPT</a> <slot /></p>
+</aside>
+
+<style>
+  .ask {
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    margin-top: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 2px dashed var(--dash);
+    border-radius: var(--radius);
+    /* As wide as its line; on phones, where it wraps anyway, the full width */
+    width: fit-content;
+  }
+  @media (max-width: 33rem) {
+    .ask {
+      width: auto;
+    }
+  }
+  .ask p {
+    margin-top: 0;
+    color: var(--text);
+  }
+  .ask :global(svg) {
+    flex: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-top: 0.15rem;
+    color: var(--link-hover);
+  }
+</style>
