@@ -1,22 +1,25 @@
 ---
-// Shows a button instead of my email address; the address is decoded in the browser only when asked for.
-// Without JavaScript, it falls back to pointing at my GitHub profile, where the address is listed.
+// Shows a button instead of my email address; the address is decoded in the browser only when asked for, and shown
+// in a popover under the button, so the buttons around it don't move. Without JavaScript, it falls back to pointing
+// at my GitHub profile, where the address is listed.
 import { EMAIL_ENCODED } from '../data/site';
 import Icon from './Icon.astro';
 
 interface Props {
+  /** Unique per page: the popover's id */
+  id: string;
   variant?: 'primary' | 'secondary';
 }
-const { variant = 'secondary' } = Astro.props;
+const { id, variant = 'secondary' } = Astro.props;
 ---
 
 <span class="email-reveal" data-email={EMAIL_ENCODED}>
-  <button type="button" class:list={['btn', `btn-${variant}`, 'reveal', 'js-only']}>
+  <button type="button" class:list={['btn', `btn-${variant}`, 'reveal', 'js-only']} popovertarget={id}>
     <Icon name="mail" />
     Email me
   </button>
-  <span class="revealed" hidden>
-    <a class:list={['btn', `btn-${variant}`, 'address']} href="#"><Icon name="mail" /><span></span></a>
+  <span class="popup" id={id} popover>
+    <a class="btn btn-secondary address" href="#"><Icon name="mail" /><span></span></a>
     <button type="button" class="btn btn-secondary copy" aria-label="Copy email address">
       <Icon name="copy" class="icon-copy" />
       <Icon name="check" class="icon-check" />
@@ -31,50 +34,137 @@ const { variant = 'secondary' } = Astro.props;
 <script>
   for (const root of document.querySelectorAll<HTMLElement>('.email-reveal')) {
     const reveal = root.querySelector<HTMLButtonElement>('.reveal')!;
-    const revealed = root.querySelector<HTMLElement>('.revealed')!;
+    const popup = root.querySelector<HTMLElement>('.popup')!;
     const address = root.querySelector<HTMLAnchorElement>('.address')!;
     const copy = root.querySelector<HTMLButtonElement>('.copy')!;
 
     const decode = () => [...atob(root.dataset.email ?? '')].reverse().join('');
 
-    reveal.addEventListener('click', () => {
-      const email = decode();
-      address.href = `mailto:${email}`;
-      address.querySelector('span')!.textContent = email;
-      reveal.hidden = true;
-      revealed.hidden = false;
-      address.focus();
+    // The popover sits in the top layer, positioned against the page: just under the button, left-aligned with it.
+    // CSS shifts it left if it would cross the right edge (--page-width), so nothing here needs its size.
+    const place = () => {
+      const rect = reveal.getBoundingClientRect();
+      popup.style.setProperty('--x', `${rect.left + scrollX}px`);
+      popup.style.setProperty('--y', `${rect.bottom + scrollY}px`);
+      popup.style.setProperty('--page-width', `${document.documentElement.clientWidth}px`);
+    };
+
+    popup.addEventListener('beforetoggle', (event) => {
+      if ((event as ToggleEvent).newState !== 'open') return;
+      if (!address.querySelector('span')!.textContent) {
+        const email = decode();
+        address.href = `mailto:${email}`;
+        address.querySelector('span')!.textContent = email;
+      }
+      place();
+    });
+    const isOpen = () => popup.matches(':popover-open');
+    const close = () => {
+      if (isOpen()) popup.hidePopover();
+    };
+
+    // Closes once the page scrolls, rather than letting the card ride over the sticky header (it's in the top
+    // layer). A few pixels of slack absorb the jitter of touch scrolling.
+    let openScrollY = 0;
+    popup.addEventListener('toggle', (event) => {
+      if ((event as ToggleEvent).newState === 'open') {
+        openScrollY = scrollY;
+        // Without scrolling to it: that would close it right away when the card opens below the fold
+        address.focus({ preventScroll: true });
+      } else {
+        delete copy.dataset.copied;
+        copy.setAttribute('aria-label', 'Copy email address');
+      }
+    });
+    addEventListener(
+      'scroll',
+      () => {
+        if (isOpen() && Math.abs(scrollY - openScrollY) > 8) close();
+      },
+      { passive: true },
+    );
+    addEventListener('resize', () => {
+      if (isOpen()) place();
     });
 
+    // Either button finishes the job, so it closes the card; the copy button first shows its check mark
+    address.addEventListener('click', close);
     copy.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(decode());
         copy.dataset.copied = '';
         copy.setAttribute('aria-label', 'Copied');
-        setTimeout(() => {
-          delete copy.dataset.copied;
-          copy.setAttribute('aria-label', 'Copy email address');
-        }, 2000);
+        setTimeout(close, 700);
       } catch {
-        // Clipboard access denied: the address is visible and selectable anyway.
+        // Clipboard access denied: the address is visible and selectable anyway, so the card stays open.
       }
     });
   }
 </script>
 
 <style>
-  .email-reveal,
-  .revealed {
+  .email-reveal {
     display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
   }
-  .revealed[hidden],
-  .btn[hidden] {
-    display: none;
+
+  /* A card like the mobile menu's panel, 0.5rem under the button. Its left edge is the button's, unless that would
+     push it past the right edge of the page (less a 1rem margin): then the translate moves it back left. */
+  .popup {
+    position: absolute;
+    inset: var(--y) auto auto var(--x);
+    translate: min(0px, calc(var(--page-width) - 1rem - var(--x) - 100%)) 0.5rem;
+    /* Its own width, not the room left of --x it would otherwise shrink to; the translate makes the room */
+    width: max-content;
+    max-width: calc(var(--page-width) - 2rem);
+    margin: 0;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.875rem;
+    background: light-dark(var(--surface), color-mix(in srgb, var(--surface) 92%, var(--text)));
+    color: var(--text);
+    box-shadow: 0 1rem 2.5rem -1rem light-dark(rgb(0 0 0 / 0.35), rgb(0 0 0 / 0.8));
+    /* Keeps the popover on screen until its exit transition finishes */
+    transition:
+      opacity 0.15s ease-in,
+      transform 0.15s ease-in,
+      overlay 0.15s allow-discrete,
+      display 0.15s allow-discrete;
+    opacity: 0;
+    transform: translateY(-0.375rem);
+  }
+  .popup:popover-open {
+    display: flex;
+    opacity: 1;
+    transform: none;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @starting-style {
+    .popup:popover-open {
+      opacity: 0;
+      transform: translateY(-0.375rem);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .popup,
+    .popup:popover-open {
+      transform: none;
+      transition-duration: 0s;
+    }
+  }
+
+  .address {
+    min-width: 0;
   }
   .address span {
     overflow-wrap: anywhere;
+  }
+  /* On phones the address only fits on one line without its icon (the button above already shows one) */
+  @media (max-width: 26rem) {
+    .address :global(svg) {
+      display: none;
+    }
   }
   .copy {
     padding-inline: 0.875rem;
