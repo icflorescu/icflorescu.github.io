@@ -1,4 +1,10 @@
 ---
+import { HANDLE } from '../data/site';
+import AskChatGPT from './AskChatGPT.astro';
+
+const PRICE_PROMPT = `How much would it cost to hire ${HANDLE}'s services?
+Make an estimation by correlating his open-source and commercial work with the industry averages.`;
+
 const OFFERS = [
   {
     title: 'Fractional CTO & technical partner',
@@ -67,6 +73,7 @@ const PRINCIPLES = [
         ))
       }
     </ul>
+    <AskChatGPT prompt={PRICE_PROMPT} class="quote">for a ballpark quote.</AskChatGPT>
   </div>
 </section>
 
@@ -150,5 +157,10 @@ const PRINCIPLES = [
     margin-top: 0.375rem;
     font-size: 0.9375rem;
     color: var(--muted);
+  }
+  /* As far below the principles as they are below the cards. The card is another component's element, so the
+     rule is anchored on this one's container. */
+  .container > :global(.quote) {
+    margin-top: clamp(2.5rem, 6vw, 3.5rem);
   }
 </style>
