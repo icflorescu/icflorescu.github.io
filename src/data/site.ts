@@ -18,6 +18,10 @@ export const AVATAR_URL = 'https://avatars.githubusercontent.com/u/581999?v=4';
 export const BOOKING_URL = 'https://cal.com/icflorescu';
 export const SPONSORS_URL = 'https://github.com/sponsors/icflorescu';
 export const RESUME_URL = 'https://github.com/icflorescu/icflorescu/blob/main/ionut-cristian-florescu--resume.pdf';
+// The same PDF, served as application/octet-stream, so it downloads instead of opening GitHub's viewer. It's on
+// another origin, where browsers ignore the download attribute; links to it need target="_self" (see middleware.ts).
+export const RESUME_DOWNLOAD_URL =
+  'https://raw.githubusercontent.com/icflorescu/icflorescu/main/ionut-cristian-florescu--resume.pdf';
 export const SOURCE_URL = 'https://github.com/icflorescu/icflorescu.github.io';
 
 // The address is published on my GitHub profile, but kept out of the HTML to spare it from naive scrapers.

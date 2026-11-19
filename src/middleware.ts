@@ -2,6 +2,7 @@ import { defineMiddleware } from 'astro:middleware';
 
 // Every link to another site (any absolute http(s) URL, the project docs sites under this host included) opens in a
 // new tab. Done once here, at build time, rather than on each link: new links get it without anyone remembering to.
+// Links that set their own target are skipped (the résumé download uses target="_self").
 // In-page (#…) and root (/) links, and the mailto: link the email button builds in the browser, are left alone.
 const EXTERNAL_LINK = /<a\b(?=[^>]*\shref="https?:\/\/)(?![^>]*\starget=)[^>]*>/g;
 

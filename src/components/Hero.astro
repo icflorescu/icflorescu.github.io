@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { AVATAR_URL, BOOKING_URL, NAME } from '../data/site';
+import { AVATAR_URL, BOOKING_URL, NAME, RESUME_DOWNLOAD_URL } from '../data/site';
 import { getStats } from '../data/stats';
 import Count from './Count.astro';
 import EmailReveal from './EmailReveal.astro';
@@ -51,6 +51,7 @@ const FACTS = [
       <div class="cta">
         <a class="btn btn-primary" href={BOOKING_URL}><Icon name="talk" />Book a call</a>
         <EmailReveal />
+        <a class="btn btn-secondary" href={RESUME_DOWNLOAD_URL} target="_self"><Icon name="download" />Résumé (PDF)</a>
       </div>
     </div>
     <div class="portrait">
