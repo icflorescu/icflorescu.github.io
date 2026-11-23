@@ -17,10 +17,10 @@ const FACTS = [
     label: 'building for the web, starting in a Bucharest Internet café in 1998',
   },
   {
-    count: { to: 2013, from: new Date().getFullYear() },
-    before: 'Since ',
-    after: '',
-    label: 'technical partner for a share of the profits, not a fee',
+    count: { to: 13, from: 1 },
+    before: '',
+    after: ' years',
+    label: 'as a technical partner for a share of the profits, not a fee',
   },
   {
     count: { to: stats.monthlyDownloads, format: 'compact', milestone: true },
@@ -205,7 +205,7 @@ const FACTS = [
   }
   .facts strong {
     font-family: var(--font-display);
-    /* The previous size on phones, where "28+ years" and "Since 2013" would otherwise wrap */
+    /* The previous size on phones, where "28+ years" and "13 years" would otherwise wrap */
     font-size: clamp(1.625rem, 4vw, 1.875rem);
     line-height: 1.1;
     letter-spacing: -0.02em;
